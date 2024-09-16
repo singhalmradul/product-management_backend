@@ -1,0 +1,10 @@
+INSERT INTO category (id, name, unit_preference, description) VALUES ('1', 'Fruits', 'KG', 'Fruits are good for health');
+INSERT INTO category (id, name, unit_preference, description) VALUES ('2', 'Vegetables', 'KG', 'Vegetables are good for health');
+INSERT INTO category (id, name, unit_preference, description) VALUES ('3', 'Dairy', 'G', 'Dairy products are good for health');
+INSERT INTO category (id, name, unit_preference, description) VALUES ('4', 'Bakery', 'G', 'Bakery products are good for health');
+INSERT INTO category (id, name, unit_preference, description) VALUES ('5', 'Meat', 'KG', 'Meat products are good for health');
+INSERT INTO category (id, name, unit_preference, description) VALUES ('6', 'Seafood', 'KG', 'Seafood products are good for health');
+INSERT INTO category (id, name, unit_preference, description) VALUES ('7', 'Poultry', 'KG', 'Poultry products are good for health');
+INSERT INTO category (id, name, unit_preference, description) VALUES ('8', 'Beverages', 'G', 'Beverages are good for health');
+INSERT INTO category (id, name, unit_preference, description) VALUES ('9', 'Snacks', 'G', 'Snacks are good for health');
+INSERT INTO category (id, name, unit_preference, description) VALUES ('10', 'Frozen', 'KG', 'Frozen products are good for health');
