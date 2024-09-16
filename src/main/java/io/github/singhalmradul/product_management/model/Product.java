@@ -1,13 +1,16 @@
 package io.github.singhalmradul.product_management.model;
 
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.UUID;
+
 import java.util.List;
 import java.util.UUID;
 
 import io.github.singhalmradul.product_management.utilities.converters.DimensionsConverter;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
-import static jakarta.persistence.GenerationType.UUID;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -52,6 +55,7 @@ public class Product {
     )
     private Variation variation;
 
+    @Enumerated(STRING)
     private Quantity.Unit unitPreference;
 
     public List<Product> getVariants() {

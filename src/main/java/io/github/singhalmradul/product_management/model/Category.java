@@ -1,10 +1,11 @@
 package io.github.singhalmradul.product_management.model;
 
+import static jakarta.persistence.EnumType.STRING;
+
 import java.util.List;
 
 import io.github.singhalmradul.product_management.utilities.identifier_generators.AlphaNumericSequence;
 import jakarta.persistence.Entity;
-import static jakarta.persistence.EnumType.STRING;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -25,7 +26,7 @@ public class Category {
     private String name;
 
     @Enumerated(STRING)
-    private Weight.Unit unitPreference;
+    private Quantity.Unit unitPreference;
 
     private List<String> images;
 

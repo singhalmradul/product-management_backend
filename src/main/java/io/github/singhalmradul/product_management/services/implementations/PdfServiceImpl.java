@@ -36,10 +36,10 @@ public class PdfServiceImpl implements PdfService {
             e.printStackTrace();
         }
         final var destination = String.format(
-                "/home/singhalmradul/tmp/%s_%s_%s.pdf",
-                order.getCustomer().getName(),
-                order.getDate().toString(),
-                order.getId()
+            "/home/singhalmradul/tmp/%s_%s_%s.pdf",
+            order.getCustomer().getName(),
+            order.getDate().toString(),
+            order.getId()
         );
         try (var pdf = new PdfDocument(new PdfWriter(destination)); var document = new Document(pdf)) {
             scaler = getScaler(document);

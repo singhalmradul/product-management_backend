@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import io.github.singhalmradul.product_management.model.Category;
 import io.github.singhalmradul.product_management.repositories.CategoryRepository;
 import io.github.singhalmradul.product_management.services.CategoryService;
+import io.github.singhalmradul.product_management.services.MediaService;
 import jakarta.servlet.http.Part;
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +18,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private static final String CATEGORY_NAME_NOT_FOUND_TEMPLATE = "Category with name %s not found";
     private final CategoryRepository repository;
+    private final MediaService mediaService;
 
     @Override
     public Category saveCategory(Category category) {
@@ -56,9 +58,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Object addCategoryImages(String categoryId, List<Part> images) {
-        //
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<String> addCategoryImages(String categoryId, List<Part> images) {
+        var category = getCategoryById(categoryId);
+        var imageUrls = mediaService.saveImageParts(images);
+        category.getImages().addAll(imageUrls);
+        return repository.save(category).getImages();
     }
 
 }
