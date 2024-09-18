@@ -6,14 +6,16 @@ import java.util.Random;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.generator.BeforeExecutionGenerator;
 import org.hibernate.generator.EventType;
+import static org.hibernate.generator.EventType.INSERT;
 
 public class AlphaNumericIdentifierGenerator implements BeforeExecutionGenerator {
 
-    private static final String ALPHA_NUMERIC_STRING = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final String ALPHA_NUMERIC_STRING = "abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789";
+    private static final Random RANDOM = new Random();
 
     @Override
     public EnumSet<EventType> getEventTypes() {
-        return EnumSet.of(EventType.INSERT);
+        return EnumSet.of(INSERT);
     }
 
     @Override
@@ -22,14 +24,13 @@ public class AlphaNumericIdentifierGenerator implements BeforeExecutionGenerator
         if (currentValue != null) {
             return currentValue;
         }
-        return generateRandomString(8);
+        return generateRandomString(RANDOM.nextInt(8, 11));
     }
 
     private String generateRandomString(int length) {
         StringBuilder builder = new StringBuilder();
-        Random random = new Random();
         for (int i = 0; i < length; i++) {
-            int index = random.nextInt(ALPHA_NUMERIC_STRING.length());
+            int index = RANDOM.nextInt(ALPHA_NUMERIC_STRING.length());
             builder.append(ALPHA_NUMERIC_STRING.charAt(index));
         }
         return builder.toString();

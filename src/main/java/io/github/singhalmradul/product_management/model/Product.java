@@ -1,12 +1,13 @@
 package io.github.singhalmradul.product_management.model;
 
 import static jakarta.persistence.EnumType.STRING;
-import static jakarta.persistence.GenerationType.UUID;
 
 import java.util.List;
-import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.github.singhalmradul.product_management.utilities.converters.DimensionsConverter;
+import io.github.singhalmradul.product_management.utilities.identifier_generators.AlphaNumericSequence;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -23,8 +24,10 @@ import lombok.Data;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = UUID)
-    private UUID id;
+    @GeneratedValue
+    @AlphaNumericSequence
+    private String id;
+
 
     private String code;
 
@@ -58,7 +61,11 @@ public class Product {
     @Enumerated(STRING)
     private Quantity.Unit unitPreference;
 
+    @JsonIgnore
     public List<Product> getVariants() {
+        if (variation == null) {
+            return List.of(this);
+        }
         return variation.getProducts();
     }
 

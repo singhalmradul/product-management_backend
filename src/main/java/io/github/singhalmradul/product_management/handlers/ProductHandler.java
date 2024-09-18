@@ -11,4 +11,8 @@ public interface ProductHandler {
 
     ServerResponse updateProduct(ServerRequest request);
 
+    ServerResponse getProduct(ServerRequest request);
+
+    ServerResponse addProductImages(ServerRequest request);
+
 }
