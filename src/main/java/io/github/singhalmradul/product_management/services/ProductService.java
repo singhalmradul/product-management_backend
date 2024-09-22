@@ -11,11 +11,13 @@ public interface ProductService {
 
     Product getProductByCode(String code);
 
-    void deleteProduct(String code);
-
     List<Product> getAllProducts();
 
     Product getProductById(String id);
 
     List<String> addProductImages(String productId, List<Part> images);
+
+    List<Product> searchProductsByName(String query);
+
+    void deleteProduct(String id);
 }

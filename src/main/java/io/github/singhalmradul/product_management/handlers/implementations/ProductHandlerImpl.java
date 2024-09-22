@@ -1,7 +1,8 @@
 package io.github.singhalmradul.product_management.handlers.implementations;
 
-import static io.github.singhalmradul.product_management.constants.BodyVariable.IMAGES;
 import static io.github.singhalmradul.product_management.constants.PathVariable.PRODUCT_ID;
+import static io.github.singhalmradul.product_management.constants.RequestVariable.IMAGES;
+import static io.github.singhalmradul.product_management.constants.RequestVariable.QUERY;
 import static io.github.singhalmradul.product_management.constants.UriConstants.PRODUCTS;
 import static io.github.singhalmradul.product_management.constants.UriConstants.SLASH;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -69,7 +70,7 @@ public class ProductHandlerImpl implements ProductHandler{
             var productId = request.pathVariable(PRODUCT_ID);
             return ok()
                 .contentType(APPLICATION_JSON)
-                .body(productService.getProductByCode(productId))
+                .body(productService.getProductById(productId))
             ;
         } catch (Exception e) {
             return badRequest().body(e.getMessage());
@@ -86,6 +87,30 @@ public class ProductHandlerImpl implements ProductHandler{
                 .body(productService.addProductImages(productId, images))
             ;
         } catch (ServletException | IOException e) {
+            return badRequest().body(e.getMessage());
+        }
+    }
+
+    @Override
+    public ServerResponse searchProductsByName(ServerRequest request) {
+        try {
+            var query = request.param(QUERY).orElseThrow();
+            return ok()
+                .contentType(APPLICATION_JSON)
+                .body(productService.searchProductsByName(query))
+            ;
+        } catch (Exception e) {
+            return badRequest().body(e.getMessage());
+        }
+    }
+
+    @Override
+    public ServerResponse deleteProduct(ServerRequest request) {
+        try {
+            var productId = request.pathVariable(PRODUCT_ID);
+            productService.deleteProduct(productId);
+            return ok().build();
+        } catch (Exception e) {
             return badRequest().body(e.getMessage());
         }
     }

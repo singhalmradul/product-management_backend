@@ -1,5 +1,7 @@
 package io.github.singhalmradul.product_management.services.implementations;
 
+import static com.itextpdf.layout.borders.Border.NO_BORDER;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -11,7 +13,6 @@ import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.BlockElement;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Image;
@@ -22,18 +23,20 @@ import com.itextpdf.layout.properties.VerticalAlignment;
 import io.github.singhalmradul.product_management.model.OrderProduct;
 import io.github.singhalmradul.product_management.model.OrderRequest;
 import io.github.singhalmradul.product_management.services.PdfService;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class PdfServiceImpl implements PdfService {
 
     private float scaler;
 
     // MARK: - Pdf generation
     @Override
-    public String generatePdf(final OrderRequest order, final List<OrderProduct> products) {
+    public String generateOrderPdf(final OrderRequest order, final List<OrderProduct> products) {
         try {
             Files.createDirectories(Paths.get("tmp"));
         } catch (final IOException e) {
-            e.printStackTrace();
+            log.error("Failed to create directory: {}", e.getMessage());
         }
         final var destination = String.format(
             "/home/singhalmradul/tmp/%s_%s_%s.pdf",
@@ -52,7 +55,7 @@ public class PdfServiceImpl implements PdfService {
                 .add(productDetails(products))
                 .add(line());
         } catch (final IOException e) {
-            e.printStackTrace();
+            log.error("Failed to generate pdf: {}", e.getMessage());
         }
         return destination;
     }
@@ -61,9 +64,9 @@ public class PdfServiceImpl implements PdfService {
     private BlockElement<?> line() {
         return new Table(getTableWidths(1))
             .addCell(new Cell()
-                .setBorderBottom(Border.NO_BORDER)
-                .setBorderLeft(Border.NO_BORDER)
-                .setBorderRight(Border.NO_BORDER)
+                .setBorderBottom(NO_BORDER)
+                .setBorderLeft(NO_BORDER)
+                .setBorderRight(NO_BORDER)
             )
         ;
     }
@@ -91,27 +94,37 @@ public class PdfServiceImpl implements PdfService {
             addKeyValueBorderless(productDetails, "Quantity", orderProduct.quantity());
             addKeyValueBorderless(productDetails, "Weight", product.getWeightString());
 
-            ImageData imageData = null;
-            try {
-                imageData = ImageDataFactory.create("/home/singhalmradul/Downloads/Pasted image.png");
-            } catch (final MalformedURLException e) {
-                e.printStackTrace();
+            if (!product.getCategories().isEmpty()) {
+                final var categories = product.getCategories().stream().map(category -> category.getName()).toList();
+                addKeyValueBorderless(productDetails, "Categories", String.join(", ", categories));
             }
-            final Image image = new Image(imageData);
-            image.setAutoScale(true);
-            image.setWidth(80);
 
             final var productEntry = new Table(getTableWidths(2, 1));
             productEntry.addCell(borderlessCell(productDetails));
-            productEntry.addCell(
-                new Cell()
-                    .add(image)
-                    .setBorder(Border.NO_BORDER)
-                    .setVerticalAlignment(VerticalAlignment.MIDDLE)
-            );
+
+            if (!product.getImages().isEmpty()) {
+
+                ImageData imageData = null;
+                try {
+                    imageData = ImageDataFactory.create(product.getImages().get(0));
+                } catch (final MalformedURLException e) {
+                    log.error("Failed to load image: {}", e.getMessage());
+                }
+                final Image image = new Image(imageData);
+                image.setAutoScale(true);
+                image.setWidth(80);
+
+                productEntry.addCell(
+                    new Cell()
+                        .add(image)
+                        .setBorder(NO_BORDER)
+                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                );
+            }
 
             productTable.addCell(borderlessCell(productEntry));
         });
+
         return productTable;
     }
 
@@ -137,7 +150,7 @@ public class PdfServiceImpl implements PdfService {
     }
 
     private Cell borderlessCell(final BlockElement<?> element) {
-        return new Cell().add(element).setBorder(Border.NO_BORDER);
+        return new Cell().add(element).setBorder(NO_BORDER);
     }
 
     private Cell borderlessCell(final String text) {

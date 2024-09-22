@@ -2,13 +2,13 @@ package io.github.singhalmradul.product_management.model;
 
 import static jakarta.persistence.EnumType.STRING;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import io.github.singhalmradul.product_management.utilities.converters.DimensionsConverter;
 import io.github.singhalmradul.product_management.utilities.identifier_generators.AlphaNumericSequence;
-import jakarta.persistence.Convert;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -39,11 +39,11 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "category_id"),
             joinColumns = @JoinColumn(name = "product_id")
     )
-    private List<Category> category;
+    private List<Category> categories;
 
     private Integer weight;
 
-    @Convert(converter = DimensionsConverter.class)
+    @Embedded
     private Dimensions dimensions;
 
     private List<String> images;
@@ -70,18 +70,18 @@ public class Product {
     }
 
     public String getWeightString() {
-        StringBuilder weightString = new StringBuilder();
-        if (weight != null) {
-            if (weight >= 1000) {
-                weightString.append(weight / 1000.0);
-                weightString.append(" kg");
-            } else {
-                weightString.append(weight);
-                weightString.append(" g");
-            }
-        } else {
-            weightString.append("-");
+        if (weight == null) {
+            return "-";
         }
-        return weightString.toString();
+        if (weight >= 1000) {
+            return String.format("%.2f kg", weight / 1000.0);
+        } else {
+            return String.format("%d g", weight);
+        }
+    }
+
+    {
+        images = new ArrayList<>();
+        categories = new ArrayList<>();
     }
 }

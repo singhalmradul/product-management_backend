@@ -65,4 +65,9 @@ public class CategoryServiceImpl implements CategoryService {
         return repository.save(category).getImages();
     }
 
+    @Override
+    public Category getReferenceById(String id) {
+        return repository.getReferenceById(id);
+    }
+
 }

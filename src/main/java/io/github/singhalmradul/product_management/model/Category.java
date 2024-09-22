@@ -2,7 +2,10 @@ package io.github.singhalmradul.product_management.model;
 
 import static jakarta.persistence.EnumType.STRING;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.github.singhalmradul.product_management.utilities.identifier_generators.AlphaNumericSequence;
 import jakarta.persistence.Entity;
@@ -30,6 +33,7 @@ public class Category {
 
     private List<String> images;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
         name = "product_category",
@@ -39,4 +43,14 @@ public class Category {
     private List<Product> products;
 
     private String description;
+
+    public Category addProduct(Product product) {
+        products.add(product);
+        return this;
+    }
+
+    {
+        images = new ArrayList<>();
+        products = new ArrayList<>();
+    }
 }

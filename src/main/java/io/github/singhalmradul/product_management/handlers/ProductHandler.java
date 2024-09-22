@@ -15,4 +15,7 @@ public interface ProductHandler {
 
     ServerResponse addProductImages(ServerRequest request);
 
+    ServerResponse searchProductsByName(ServerRequest request);
+
+    ServerResponse deleteProduct(ServerRequest request);
 }

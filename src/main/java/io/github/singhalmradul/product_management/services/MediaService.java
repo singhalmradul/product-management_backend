@@ -9,4 +9,8 @@ public interface MediaService {
     String saveImagePart(Part imagePart);
 
     List<String> saveImageParts(List<Part> imageParts);
+
+    void deleteImage(String imageName);
+
+    void deleteImages(List<String> imageNames);
 }

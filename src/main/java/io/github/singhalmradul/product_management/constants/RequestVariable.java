@@ -1,9 +1,10 @@
 package io.github.singhalmradul.product_management.constants;
 
-public class BodyVariable {
+public class RequestVariable {
 
-    private BodyVariable() {}
+    private RequestVariable() {}
 
     public static final String IMAGES = "images";
+    public static final String QUERY = "query";
 
 }

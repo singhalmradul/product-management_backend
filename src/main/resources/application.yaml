@@ -7,6 +7,9 @@ spring:
   application:
     name: product-management
 
+  cache:
+    type: simple
+
   datasource:
     url: jdbc:postgresql://localhost:5432/product-management
     username: postgres
@@ -26,6 +29,7 @@ spring:
 
   sql:
     init:
+      mode: always
       platform: postgresql
-      # schema-locations: classpath:/schema.sql
+      schema-locations: classpath:/schema.sql
       data-locations: classpath:/data.sql

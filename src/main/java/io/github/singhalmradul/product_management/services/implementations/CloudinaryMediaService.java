@@ -1,6 +1,7 @@
 package io.github.singhalmradul.product_management.services.implementations;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 import java.io.IOException;
@@ -14,19 +15,17 @@ import com.cloudinary.Cloudinary;
 import io.github.singhalmradul.product_management.services.MediaService;
 import jakarta.servlet.http.Part;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Component
-@Slf4j
 public class CloudinaryMediaService implements MediaService {
 
     private final Cloudinary cloudinary;
 
     @Override
-    public String saveImagePart(Part imagePart) {
+    public String saveImagePart(final Part imagePart) {
 
-        var cloudinaryConfig = Map.of(
+        final var cloudinaryConfig = Map.of(
             "folder", "product_management",
             "unique_filename", true,
             "overwrite", false,
@@ -42,7 +41,7 @@ public class CloudinaryMediaService implements MediaService {
                 .get("url")
                 .toString();
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
 
             throw new RuntimeException(e.getMessage());
         }
@@ -50,10 +49,27 @@ public class CloudinaryMediaService implements MediaService {
     }
 
     @Override
-    public List<String> saveImageParts(List<Part> imageParts) {
+    public List<String> saveImageParts(final List<Part> imageParts) {
         if (isEmpty(imageParts)) {
             return emptyList();
         }
         return imageParts.stream().map(this::saveImagePart).toList();
+    }
+
+    @Override
+    public void deleteImage(final String imageName) {
+        try {
+            cloudinary.uploader().destroy(imageName, emptyMap());
+        } catch (final IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteImages(final List<String> imageNames) {
+        if (isEmpty(imageNames)) {
+            return;
+        }
+        imageNames.forEach(this::deleteImage);
     }
 }

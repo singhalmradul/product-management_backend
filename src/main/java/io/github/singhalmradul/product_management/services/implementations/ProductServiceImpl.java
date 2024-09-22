@@ -2,9 +2,11 @@ package io.github.singhalmradul.product_management.services.implementations;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.github.singhalmradul.product_management.model.Product;
 import io.github.singhalmradul.product_management.repositories.ProductRepository;
+import io.github.singhalmradul.product_management.services.CategoryService;
 import io.github.singhalmradul.product_management.services.MediaService;
 import io.github.singhalmradul.product_management.services.ProductService;
 import jakarta.servlet.http.Part;
@@ -16,15 +18,27 @@ public class ProductServiceImpl implements ProductService {
 
     private static final String PRODUCT_CODE_NOT_FOUND_TEMPLATE = "Product with code %s not found";
     private final ProductRepository repository;
+    private final CategoryService categoryService;
     private final MediaService mediaService;
 
     @Override
-    public Product saveProduct(Product product) {
+    @Transactional
+    public Product saveProduct(final Product product) {
+        final var categories = product
+            .getCategories()
+            .stream()
+            .map(category ->
+                categoryService
+                    .getReferenceById(category.getId())
+                    .addProduct(product)
+            )
+            .toList();
+        product.setCategories(categories);
         return repository.save(product);
     }
 
     @Override
-    public Product getProductByCode(String code) {
+    public Product getProductByCode(final String code) {
         return repository
             .findByCode(code)
             .orElseThrow(() -> new IllegalArgumentException(String.format(
@@ -35,17 +49,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(String code) {
-        repository.deleteByCode(code);
-    }
-
-    @Override
     public List<Product> getAllProducts() {
         return repository.findAll();
     }
 
     @Override
-    public Product getProductById(String id) {
+    public Product getProductById(final String id) {
         return repository
             .findById(id)
             .orElseThrow(() -> new IllegalArgumentException(String.format(
@@ -56,12 +65,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<String> addProductImages(String productId, List<Part> images) {
-        Product product = getProductById(productId);
-        List<String> imageUrls = mediaService.saveImageParts(images);
+    @Transactional
+    public List<String> addProductImages(final String productId, final List<Part> images) {
+        final Product product = getProductById(productId);
+        final List<String> imageUrls = mediaService.saveImageParts(images);
         product.getImages().addAll(imageUrls);
         repository.save(product);
         return imageUrls;
+    }
+
+    @Override
+    public List<Product> searchProductsByName(final String query) {
+        return repository.findByNameSimilar(query);
+    }
+
+    @Override
+    @Transactional
+    public void deleteProduct(final String id) {
+        final Product product = getProductById(id);
+        mediaService.deleteImages(product.getImages());
+        repository.delete(product);
     }
 
 }

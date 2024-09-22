@@ -7,5 +7,5 @@ import io.github.singhalmradul.product_management.model.OrderRequest;
 
 public interface PdfService {
 
-    String generatePdf(OrderRequest order, List<OrderProduct> products);
+    String generateOrderPdf(OrderRequest order, List<OrderProduct> products);
 }

@@ -17,5 +17,7 @@ public interface CategoryService {
 
     Category getCategoryById(String id);
 
-    public List<String> addCategoryImages(String categoryId, List<Part> images);
+    List<String> addCategoryImages(String categoryId, List<Part> images);
+
+    Category getReferenceById(String id);
 }
