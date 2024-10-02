@@ -11,7 +11,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class OrderProduct {
+public class OrderedProduct {
 
     @Id
     private String id;
@@ -23,7 +23,7 @@ public class OrderProduct {
     @Embedded
     private Quantity quantity;
 
-    public OrderProduct(Product product, Quantity quantity) {
+    public OrderedProduct(Product product, Quantity quantity) {
         Assert.notNull(product, "Product must not be null");
         Assert.notNull(quantity, "Quantity must not be null");
         this.product = product;

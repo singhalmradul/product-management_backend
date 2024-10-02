@@ -30,11 +30,11 @@ public class OrderRequest {
 
     private String pdf;
 
-    @ManyToMany(targetEntity = OrderProduct.class)
+    @ManyToMany(targetEntity = OrderedProduct.class)
     @JoinTable(
         name = "order_product",
         inverseJoinColumns = @JoinColumn(name = "product_id"),
         joinColumns = @JoinColumn(name = "order_id")
     )
-    private List<OrderProduct> products;
+    private List<OrderedProduct> products;
 }

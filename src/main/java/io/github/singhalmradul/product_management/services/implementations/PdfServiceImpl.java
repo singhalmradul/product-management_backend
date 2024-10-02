@@ -25,8 +25,8 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 
 import io.github.singhalmradul.product_management.model.Category;
-import io.github.singhalmradul.product_management.model.OrderProduct;
 import io.github.singhalmradul.product_management.model.OrderRequest;
+import io.github.singhalmradul.product_management.model.OrderedProduct;
 import io.github.singhalmradul.product_management.services.PdfService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -99,7 +99,7 @@ public class PdfServiceImpl implements PdfService {
         return table;
     }
 
-    private BlockElement<?> productDetails(final List<OrderProduct> products) {
+    private BlockElement<?> productDetails(final List<OrderedProduct> products) {
         final var productTable = new Table(getTableWidths(1, 1));
         products.forEach(orderProduct -> {
 

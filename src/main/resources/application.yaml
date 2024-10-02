@@ -1,3 +1,5 @@
+
+
 server:
   port: 8080
   servlet:
@@ -9,6 +11,9 @@ spring:
 
   cache:
     type: simple
+
+  config:
+    import: optional:file:.env[.properties]
 
   datasource:
     url: jdbc:postgresql://localhost:5432/product-management

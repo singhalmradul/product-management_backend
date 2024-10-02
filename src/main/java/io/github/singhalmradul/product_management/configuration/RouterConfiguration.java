@@ -5,6 +5,7 @@ import static io.github.singhalmradul.product_management.constants.PathVariable.
 import static io.github.singhalmradul.product_management.constants.UriConstants.CATEGORIES;
 import static io.github.singhalmradul.product_management.constants.UriConstants.GENERATE;
 import static io.github.singhalmradul.product_management.constants.UriConstants.IMAGES;
+import static io.github.singhalmradul.product_management.constants.UriConstants.INDEX;
 import static io.github.singhalmradul.product_management.constants.UriConstants.ORDERS;
 import static io.github.singhalmradul.product_management.constants.UriConstants.PDF;
 import static io.github.singhalmradul.product_management.constants.UriConstants.PRODUCTS;
@@ -32,16 +33,19 @@ public class RouterConfiguration {
 
         return route()
             .path(VERSION_1, builder -> builder
+                // /v1
                 .path(PRODUCTS, builder1 -> builder1
-                    .GET(SEARCH,handler::searchProductsByName)
+                    // /v1/products
+                    .GET(SEARCH, handler::searchProductsByName)
                     .path(pathVariable(PRODUCT_ID), builder2 -> builder2
+                        // /v1/products/{productId}
                         .POST(IMAGES, contentType(MULTIPART_FORM_DATA), handler::addProductImages)
-                        .GET(handler::getProduct)
-                        .DELETE(handler::deleteProduct)
+                        .GET(INDEX, handler::getProduct)
+                        .DELETE(INDEX, handler::deleteProduct)
                     )
-                    .GET(handler::getAllProducts)
-                    .POST(handler::createProduct)
-                    .PUT(handler::updateProduct)
+                    .GET(INDEX, handler::getAllProducts)
+                    .POST(INDEX, handler::createProduct)
+                    .PUT(INDEX, handler::updateProduct)
                 )
             )
             .build();
@@ -52,13 +56,16 @@ public class RouterConfiguration {
 
         return route()
             .path(VERSION_1, builder -> builder
+                // /v1
                 .path(CATEGORIES, builder1 -> builder1
+                    // /v1/categories
                     .path(pathVariable(CATEGORY_ID), builder2 -> builder2
+                        // /v1/categories/{categoryId}
                         .POST(IMAGES, contentType(MULTIPART_FORM_DATA), handler::addCategoryImages)
-                        .GET(handler::getCategory)
+                        .GET(INDEX, handler::getCategory)
                     )
-                    .GET(handler::getCategories)
-                    .POST(handler::createCategory)
+                    .GET(INDEX, handler::getCategories)
+                    .POST(INDEX, handler::createCategory)
                 )
             )
             .build()
@@ -70,8 +77,11 @@ public class RouterConfiguration {
 
         return route()
             .path(VERSION_1, builder -> builder
+                // /v1
                 .path(ORDERS, builder1 -> builder1
+                    // /v1/orders
                     .path(GENERATE, builder2 -> builder2
+                        // /v1/orders/generate
                         .POST(PDF, handler::getOrderPdf)
                     )
                 )
