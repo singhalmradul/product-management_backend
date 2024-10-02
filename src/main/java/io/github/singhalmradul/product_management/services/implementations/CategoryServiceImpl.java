@@ -1,5 +1,8 @@
 package io.github.singhalmradul.product_management.services.implementations;
 
+import static java.lang.String.format;
+
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -15,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-
     private static final String CATEGORY_NAME_NOT_FOUND_TEMPLATE = "Category with name %s not found";
     private final CategoryRepository repository;
     private final MediaService mediaService;
@@ -29,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category getCategoryByName(String name) {
         return repository
             .findByName(name)
-            .orElseThrow(() -> new IllegalArgumentException(String.format(
+            .orElseThrow(() -> new IllegalArgumentException(format(
                 CATEGORY_NAME_NOT_FOUND_TEMPLATE,
                 name
             )))
@@ -50,7 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category getCategoryById(String id) {
         return repository
             .findById(id)
-            .orElseThrow(() -> new IllegalArgumentException(String.format(
+            .orElseThrow(() -> new IllegalArgumentException(format(
                 "Category with id %s not found",
                 id
             )))
@@ -60,7 +62,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<String> addCategoryImages(String categoryId, List<Part> images) {
         var category = getCategoryById(categoryId);
-        var imageUrls = mediaService.saveImageParts(images);
+        var imageUrls = mediaService.saveFiles(images.stream().map(part -> {
+            try {
+                return part.getInputStream();
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }).toList());
         category.getImages().addAll(imageUrls);
         return repository.save(category).getImages();
     }

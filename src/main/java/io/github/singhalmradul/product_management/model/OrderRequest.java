@@ -3,11 +3,15 @@ package io.github.singhalmradul.product_management.model;
 import static jakarta.persistence.GenerationType.UUID;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
@@ -25,4 +29,12 @@ public class OrderRequest {
     private LocalDate date;
 
     private String pdf;
+
+    @ManyToMany(targetEntity = OrderProduct.class)
+    @JoinTable(
+        name = "order_product",
+        inverseJoinColumns = @JoinColumn(name = "product_id"),
+        joinColumns = @JoinColumn(name = "order_id")
+    )
+    private List<OrderProduct> products;
 }

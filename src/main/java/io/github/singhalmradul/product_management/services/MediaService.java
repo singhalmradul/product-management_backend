@@ -1,16 +1,15 @@
 package io.github.singhalmradul.product_management.services;
 
+import java.io.InputStream;
 import java.util.List;
-
-import jakarta.servlet.http.Part;
 
 public interface MediaService {
 
-    String saveImagePart(Part imagePart);
+    String saveFile(InputStream inputStream);
 
-    List<String> saveImageParts(List<Part> imageParts);
+    List<String> saveFiles(List<InputStream> inputStreams);
 
-    void deleteImage(String imageName);
+    void deleteFile(String fileName);
 
-    void deleteImages(List<String> imageNames);
+    void deleteFiles(List<String> fileNames);
 }

@@ -1,5 +1,8 @@
 package io.github.singhalmradul.product_management.model;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public record Quantity(int value, Unit unit) {
 
     public Quantity {

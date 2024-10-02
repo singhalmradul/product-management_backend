@@ -10,6 +10,10 @@ public class UriConstants {
     public static final String CATEGORIES = "/categories";
     public static final String IMAGES = "/images";
     public static final String SEARCH = "/search";
+    public static final String ORDERS = "/orders";
+    public static final String GENERATE = "/generate";
+    public static final String PDF = "/pdf";
+
     public static final String pathVariable(String variable) {
         return "/{" + variable + "}";
     }

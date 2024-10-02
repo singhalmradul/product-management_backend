@@ -1,12 +1,17 @@
 package io.github.singhalmradul.product_management.services.implementations;
 
 import static com.itextpdf.layout.borders.Border.NO_BORDER;
+import static com.itextpdf.layout.properties.VerticalAlignment.MIDDLE;
+import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.deleteIfExists;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+
+import org.springframework.stereotype.Component;
 
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -18,33 +23,44 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.properties.VerticalAlignment;
 
+import io.github.singhalmradul.product_management.model.Category;
 import io.github.singhalmradul.product_management.model.OrderProduct;
 import io.github.singhalmradul.product_management.model.OrderRequest;
 import io.github.singhalmradul.product_management.services.PdfService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Component
 public class PdfServiceImpl implements PdfService {
 
     private float scaler;
 
     // MARK: - Pdf generation
     @Override
-    public String generateOrderPdf(final OrderRequest order, final List<OrderProduct> products) {
+    public File generateOrderPdf(final OrderRequest order) {
         try {
-            Files.createDirectories(Paths.get("tmp"));
+            createDirectories(Paths.get("tmp"));
         } catch (final IOException e) {
             log.error("Failed to create directory: {}", e.getMessage());
         }
+
         final var destination = String.format(
-            "/home/singhalmradul/tmp/%s_%s_%s.pdf",
+            "tmp/%s_%s_%s.pdf",
             order.getCustomer().getName(),
             order.getDate().toString(),
             order.getId()
         );
-        try (var pdf = new PdfDocument(new PdfWriter(destination)); var document = new Document(pdf)) {
+
+        try {
+            deleteIfExists(Paths.get(destination));
+        } catch (IOException e) {
+            log.error("Failed to delete existing file: {}", e.getMessage());
+        }
+
+        final var file = Paths.get(destination).toFile();
+
+        try (var pdf = new PdfDocument(new PdfWriter(file)); var document = new Document(pdf)) {
             scaler = getScaler(document);
             document
                 .add(line())
@@ -52,12 +68,12 @@ public class PdfServiceImpl implements PdfService {
                 .add(line())
                 .add(orderDetails(order))
                 .add(line())
-                .add(productDetails(products))
+                .add(productDetails(order.getProducts()))
                 .add(line());
         } catch (final IOException e) {
             log.error("Failed to generate pdf: {}", e.getMessage());
         }
-        return destination;
+        return file;
     }
 
     // MARK: - Document elements
@@ -88,14 +104,19 @@ public class PdfServiceImpl implements PdfService {
         products.forEach(orderProduct -> {
 
             final var productDetails = new Table(getTableWidths(1, 2));
-            final var product = orderProduct.product();
+            final var product = orderProduct.getProduct();
             addKeyValueBorderless(productDetails, "Code", product.getCode());
             addKeyValueBorderless(productDetails, "Name", product.getName());
-            addKeyValueBorderless(productDetails, "Quantity", orderProduct.quantity());
+            addKeyValueBorderless(productDetails, "Quantity", orderProduct.getQuantity());
             addKeyValueBorderless(productDetails, "Weight", product.getWeightString());
 
             if (!product.getCategories().isEmpty()) {
-                final var categories = product.getCategories().stream().map(category -> category.getName()).toList();
+                final var categories = product
+                    .getCategories()
+                    .stream()
+                    .map(Category::getName)
+                    .toList()
+                ;
                 addKeyValueBorderless(productDetails, "Categories", String.join(", ", categories));
             }
 
@@ -118,7 +139,7 @@ public class PdfServiceImpl implements PdfService {
                     new Cell()
                         .add(image)
                         .setBorder(NO_BORDER)
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setVerticalAlignment(MIDDLE)
                 );
             }
 
@@ -130,7 +151,7 @@ public class PdfServiceImpl implements PdfService {
 
     // MARK: - Helper methods
     private float getScaler(final Document document) {
-        return document.getPageEffectiveArea(document.getPdfDocument().getDefaultPageSize()).getWidth();
+        return document.getPdfDocument().getDefaultPageSize().getWidth();
     }
 
     private float[] getTableWidths(final float... ratios) {

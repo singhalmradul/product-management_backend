@@ -1,11 +1,10 @@
 package io.github.singhalmradul.product_management.services;
 
-import java.util.List;
+import java.io.File;
 
-import io.github.singhalmradul.product_management.model.OrderProduct;
 import io.github.singhalmradul.product_management.model.OrderRequest;
 
 public interface PdfService {
 
-    String generateOrderPdf(OrderRequest order, List<OrderProduct> products);
+    File generateOrderPdf(OrderRequest order);
 }

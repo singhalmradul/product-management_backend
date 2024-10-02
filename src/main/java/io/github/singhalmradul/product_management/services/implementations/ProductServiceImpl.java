@@ -1,4 +1,6 @@
 package io.github.singhalmradul.product_management.services.implementations;
+
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -68,7 +70,14 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public List<String> addProductImages(final String productId, final List<Part> images) {
         final Product product = getProductById(productId);
-        final List<String> imageUrls = mediaService.saveImageParts(images);
+        final List<String> imageUrls = mediaService.saveFiles(images.stream().map(part -> {
+            try {
+                return part.getInputStream();
+            } catch (final IOException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }).toList()
+        );
         product.getImages().addAll(imageUrls);
         repository.save(product);
         return imageUrls;
@@ -83,7 +92,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void deleteProduct(final String id) {
         final Product product = getProductById(id);
-        mediaService.deleteImages(product.getImages());
+        mediaService.deleteFiles(product.getImages());
         repository.delete(product);
     }
 

@@ -3,7 +3,10 @@ package io.github.singhalmradul.product_management.configuration;
 import static io.github.singhalmradul.product_management.constants.PathVariable.CATEGORY_ID;
 import static io.github.singhalmradul.product_management.constants.PathVariable.PRODUCT_ID;
 import static io.github.singhalmradul.product_management.constants.UriConstants.CATEGORIES;
+import static io.github.singhalmradul.product_management.constants.UriConstants.GENERATE;
 import static io.github.singhalmradul.product_management.constants.UriConstants.IMAGES;
+import static io.github.singhalmradul.product_management.constants.UriConstants.ORDERS;
+import static io.github.singhalmradul.product_management.constants.UriConstants.PDF;
 import static io.github.singhalmradul.product_management.constants.UriConstants.PRODUCTS;
 import static io.github.singhalmradul.product_management.constants.UriConstants.SEARCH;
 import static io.github.singhalmradul.product_management.constants.UriConstants.VERSION_1;
@@ -18,6 +21,7 @@ import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerResponse;
 
 import io.github.singhalmradul.product_management.handlers.CategoryHandler;
+import io.github.singhalmradul.product_management.handlers.OrderHandler;
 import io.github.singhalmradul.product_management.handlers.ProductHandler;
 
 @Configuration
@@ -29,13 +33,9 @@ public class RouterConfiguration {
         return route()
             .path(VERSION_1, builder -> builder
                 .path(PRODUCTS, builder1 -> builder1
-                    .path(SEARCH, builder2 -> builder2
-                        .GET(handler::searchProductsByName)
-                    )
+                    .GET(SEARCH,handler::searchProductsByName)
                     .path(pathVariable(PRODUCT_ID), builder2 -> builder2
-                        .path(IMAGES, builder3 -> builder3
-                            .POST(contentType(MULTIPART_FORM_DATA), handler::addProductImages)
-                        )
+                        .POST(IMAGES, contentType(MULTIPART_FORM_DATA), handler::addProductImages)
                         .GET(handler::getProduct)
                         .DELETE(handler::deleteProduct)
                     )
@@ -54,13 +54,26 @@ public class RouterConfiguration {
             .path(VERSION_1, builder -> builder
                 .path(CATEGORIES, builder1 -> builder1
                     .path(pathVariable(CATEGORY_ID), builder2 -> builder2
-                        .path(IMAGES, builder3 -> builder3
-                            .POST(contentType(MULTIPART_FORM_DATA), handler::addCategoryImages)
-                        )
+                        .POST(IMAGES, contentType(MULTIPART_FORM_DATA), handler::addCategoryImages)
                         .GET(handler::getCategory)
                     )
                     .GET(handler::getCategories)
                     .POST(handler::createCategory)
+                )
+            )
+            .build()
+        ;
+    }
+
+    @Bean
+    RouterFunction<ServerResponse> orderRouter(OrderHandler handler) {
+
+        return route()
+            .path(VERSION_1, builder -> builder
+                .path(ORDERS, builder1 -> builder1
+                    .path(GENERATE, builder2 -> builder2
+                        .POST(PDF, handler::getOrderPdf)
+                    )
                 )
             )
             .build()
