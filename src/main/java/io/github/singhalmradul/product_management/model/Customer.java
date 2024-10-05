@@ -1,9 +1,6 @@
 package io.github.singhalmradul.product_management.model;
 
-import static jakarta.persistence.GenerationType.UUID;
-
-import java.util.UUID;
-
+import io.github.singhalmradul.product_management.utilities.identifier_generators.AlphaNumericSequence;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -14,16 +11,17 @@ import lombok.Data;
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = UUID)
-    UUID id;
+    @GeneratedValue
+    @AlphaNumericSequence
+    private String id;
 
-    String name;
+    private String name;
 
-    String phoneNumber;
+    private String phoneNumber;
 
-    String email;
+    private String email;
 
-    String gstin;
+    private String gstin;
 
-    String description;
+    private String description;
 }

@@ -1,5 +1,6 @@
 package io.github.singhalmradul.product_management.filters;
 
+import static java.lang.String.join;
 import static java.util.Collections.list;
 
 import java.io.IOException;
@@ -31,9 +32,13 @@ public class LoggingFilter implements Filter {
         chain.doFilter(wrappedRequest, wrappedResponse);
 
         // Log request details
+        log.info("----------------------------------------------REQUEST----------------------------------------------");
         log.info("Request: {} {}", wrappedRequest.getMethod(), wrappedRequest.getRequestURI());
         log.info("Request Headers: {}", list(wrappedRequest.getHeaderNames()));
-        log.info("Request Parameters: {}", wrappedRequest.getParameterMap());
+        log.info("Request Parameters: {}", wrappedRequest.getParameterMap().entrySet().stream()
+            .map(entry -> entry.getKey() + "=" + join(",", entry.getValue()))
+            .toList()
+        );
 
         // Read and log the cached request body
         byte[] requestBody = wrappedRequest.getContentAsByteArray();
@@ -44,6 +49,7 @@ public class LoggingFilter implements Filter {
         }
 
         // Log response details
+        log.info("----------------------------------------------RESPONSE----------------------------------------------");
         log.info("Response: {}", wrappedResponse.getStatus());
         log.info("Response Headers: {}", wrappedResponse.getHeaderNames());
 
@@ -54,6 +60,8 @@ public class LoggingFilter implements Filter {
         } else {
             log.info("Response Body: [empty]");
         }
+
+        log.info("----------------------------------------------END----------------------------------------------");
 
         // Ensure the response body is copied back to the response
         wrappedResponse.copyBodyToResponse();

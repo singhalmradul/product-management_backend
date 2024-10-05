@@ -1,5 +1,8 @@
 package io.github.singhalmradul.product_management.services.implementations;
 
+import static java.util.Collections.emptyList;
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -18,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private static final String PRODUCT_CODE_NOT_FOUND_TEMPLATE = "Product with code %s not found";
     private final ProductRepository repository;
     private final CategoryService categoryService;
     private final MediaService mediaService;
@@ -34,7 +36,8 @@ public class ProductServiceImpl implements ProductService {
                     .getReferenceById(category.getId())
                     .addProduct(product)
             )
-            .toList();
+            .toList()
+        ;
         product.setCategories(categories);
         return repository.save(product);
     }
@@ -44,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
         return repository
             .findByCode(code)
             .orElseThrow(() -> new IllegalArgumentException(String.format(
-                PRODUCT_CODE_NOT_FOUND_TEMPLATE,
+                "Product with code %s not found",
                 code
             )))
         ;
@@ -69,15 +72,21 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public List<String> addProductImages(final String productId, final List<Part> images) {
-        final Product product = getProductById(productId);
-        final List<String> imageUrls = mediaService.saveFiles(images.stream().map(part -> {
-            try {
-                return part.getInputStream();
-            } catch (final IOException e) {
-                throw new RuntimeException(e.getMessage());
-            }
-        }).toList()
-        );
+        if(isEmpty(images)) {
+            return emptyList();
+        }
+        final var product = getProductById(productId);
+        final var inputStreams = images
+            .stream()
+            .map(part -> {
+                try {
+                    return part.getInputStream();
+                } catch (final IOException e) {
+                    throw new RuntimeException(e.getMessage());
+                }
+            }).toList()
+        ;
+        final var imageUrls = mediaService.saveFiles(inputStreams);
         product.getImages().addAll(imageUrls);
         repository.save(product);
         return imageUrls;
@@ -91,7 +100,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void deleteProduct(final String id) {
-        final Product product = getProductById(id);
+        final var product = getProductById(id);
         mediaService.deleteFiles(product.getImages());
         repository.delete(product);
     }

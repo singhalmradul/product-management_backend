@@ -1,11 +1,9 @@
 package io.github.singhalmradul.product_management.model;
 
-import static jakarta.persistence.GenerationType.UUID;
-
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
+import io.github.singhalmradul.product_management.utilities.identifier_generators.AlphaNumericSequence;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -20,8 +18,9 @@ import lombok.Data;
 public class OrderRequest {
 
     @Id
-    @GeneratedValue(strategy = UUID)
-    private UUID id;
+    @GeneratedValue
+    @AlphaNumericSequence
+    private String id;
 
     @ManyToOne(targetEntity = Customer.class, optional = false)
     private Customer customer;

@@ -1,6 +1,7 @@
 package io.github.singhalmradul.product_management.model;
 
 import static jakarta.persistence.EnumType.STRING;
+import static java.lang.String.format;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +40,14 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "category_id"),
             joinColumns = @JoinColumn(name = "product_id")
     )
-    private List<Category> categories;
+    private List<Category> categories = new ArrayList<>();
 
     private Integer weight;
 
     @Embedded
     private Dimensions dimensions;
 
-    private List<String> images;
+    private List<String> images = new ArrayList<>();
 
     private String description;
 
@@ -61,6 +62,13 @@ public class Product {
     @Enumerated(STRING)
     private Quantity.Unit unitPreference;
 
+    public Quantity.Unit getUnitPreference() {
+        if (unitPreference == null) {
+            return categories.get(0).getUnitPreference();
+        }
+        return unitPreference;
+    }
+
     @JsonIgnore
     public List<Product> getVariants() {
         if (variation == null) {
@@ -74,14 +82,9 @@ public class Product {
             return "-";
         }
         if (weight >= 1000) {
-            return String.format("%.2f kg", weight / 1000.0);
+            return format("%.2f kg", weight / 1000.0);
         } else {
-            return String.format("%d g", weight);
+            return format("%d g", weight);
         }
-    }
-
-    {
-        images = new ArrayList<>();
-        categories = new ArrayList<>();
     }
 }

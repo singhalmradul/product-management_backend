@@ -11,7 +11,7 @@ public interface CategoryService {
 
     Category getCategoryByName(String name);
 
-    void deleteCategory(String name);
+    void deleteCategoryById(String id);
 
     List<Category> getCategories();
 
@@ -20,4 +20,6 @@ public interface CategoryService {
     List<String> addCategoryImages(String categoryId, List<Part> images);
 
     Category getReferenceById(String id);
+
+    List<Category> findByNameSimilar(String name);
 }

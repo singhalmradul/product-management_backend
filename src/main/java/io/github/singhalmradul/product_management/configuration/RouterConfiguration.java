@@ -41,11 +41,11 @@ public class RouterConfiguration {
                         // /v1/products/{productId}
                         .POST(IMAGES, contentType(MULTIPART_FORM_DATA), handler::addProductImages)
                         .GET(INDEX, handler::getProduct)
+                        .PUT(INDEX, handler::updateProduct)
                         .DELETE(INDEX, handler::deleteProduct)
                     )
                     .GET(INDEX, handler::getAllProducts)
                     .POST(INDEX, handler::createProduct)
-                    .PUT(INDEX, handler::updateProduct)
                 )
             )
             .build();
@@ -59,10 +59,13 @@ public class RouterConfiguration {
                 // /v1
                 .path(CATEGORIES, builder1 -> builder1
                     // /v1/categories
+                    .GET(SEARCH, handler::searchCategoriesByName)
                     .path(pathVariable(CATEGORY_ID), builder2 -> builder2
                         // /v1/categories/{categoryId}
                         .POST(IMAGES, contentType(MULTIPART_FORM_DATA), handler::addCategoryImages)
                         .GET(INDEX, handler::getCategory)
+                        .PUT(INDEX, handler::updateCategory)
+                        .DELETE(INDEX, handler::deleteCategory)
                     )
                     .GET(INDEX, handler::getCategories)
                     .POST(INDEX, handler::createCategory)

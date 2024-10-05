@@ -39,8 +39,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategory(String name) {
-        repository.deleteByName(name);
+    public void deleteCategoryById(String id) {
+        repository.deleteById(id);
     }
 
     @Override
@@ -76,6 +76,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category getReferenceById(String id) {
         return repository.getReferenceById(id);
+    }
+
+    @Override
+    public List<Category> findByNameSimilar(String name) {
+        return repository.findByNameSimilar(name);
     }
 
 }

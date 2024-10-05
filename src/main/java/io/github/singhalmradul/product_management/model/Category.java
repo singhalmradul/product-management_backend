@@ -31,7 +31,7 @@ public class Category {
     @Enumerated(STRING)
     private Quantity.Unit unitPreference;
 
-    private List<String> images;
+    private List<String> images = new ArrayList<>();
 
     @JsonIgnore
     @ManyToMany
@@ -40,17 +40,12 @@ public class Category {
         joinColumns = @JoinColumn(name = "category_id"),
         inverseJoinColumns = @JoinColumn(name = "product_id")
     )
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
     private String description;
 
     public Category addProduct(Product product) {
         products.add(product);
         return this;
-    }
-
-    {
-        images = new ArrayList<>();
-        products = new ArrayList<>();
     }
 }

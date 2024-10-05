@@ -22,7 +22,9 @@ import io.github.singhalmradul.product_management.model.Product;
 import io.github.singhalmradul.product_management.services.ProductService;
 import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class ProductHandlerImpl implements ProductHandler{
@@ -39,6 +41,7 @@ public class ProductHandlerImpl implements ProductHandler{
                 .body(productService.saveProduct(product))
             ;
         } catch (ServletException | IOException e) {
+            log.warn("Error while creating product", e);
             return badRequest().body(e.getMessage());
         }
     }
@@ -46,12 +49,15 @@ public class ProductHandlerImpl implements ProductHandler{
     @Override
     public ServerResponse updateProduct(ServerRequest request) {
         try {
+            var id = request.pathVariable(PRODUCT_ID);
             var product = request.body(Product.class);
+            product.setId(id);
             return ok()
                 .contentType(APPLICATION_JSON)
                 .body(productService.saveProduct(product))
             ;
         } catch (ServletException | IOException e) {
+            log.warn("Error while updating product", e);
             return badRequest().body(e.getMessage());
         }
     }
@@ -73,6 +79,7 @@ public class ProductHandlerImpl implements ProductHandler{
                 .body(productService.getProductById(productId))
             ;
         } catch (Exception e) {
+            log.warn("Error while fetching product", e);
             return badRequest().body(e.getMessage());
         }
     }
@@ -87,6 +94,7 @@ public class ProductHandlerImpl implements ProductHandler{
                 .body(productService.addProductImages(productId, images))
             ;
         } catch (ServletException | IOException e) {
+            log.warn("Error while adding product images", e);
             return badRequest().body(e.getMessage());
         }
     }
@@ -100,6 +108,7 @@ public class ProductHandlerImpl implements ProductHandler{
                 .body(productService.searchProductsByName(query))
             ;
         } catch (Exception e) {
+            log.warn("Error while searching products", e);
             return badRequest().body(e.getMessage());
         }
     }
@@ -111,6 +120,7 @@ public class ProductHandlerImpl implements ProductHandler{
             productService.deleteProduct(productId);
             return ok().build();
         } catch (Exception e) {
+            log.warn("Error while deleting product", e);
             return badRequest().body(e.getMessage());
         }
     }

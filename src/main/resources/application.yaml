@@ -1,5 +1,3 @@
-
-
 server:
   port: 8080
   servlet:
@@ -20,6 +18,13 @@ spring:
     username: postgres
     password: postgres
 
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+      indent-output: true
+    default-property-inclusion: NON_NULL
+    deserialization:
+      fail-on-unknown-properties: false
   jpa:
     database: postgresql
     defer-datasource-initialization: true
@@ -30,7 +35,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
         hbm2ddl:
-          auto: create-drop
+          auto: drop
 
   sql:
     init:

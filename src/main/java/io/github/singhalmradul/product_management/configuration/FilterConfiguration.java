@@ -4,7 +4,8 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.github.singhalmradul.product_management.filters.LoggingFilter;
+import
+io.github.singhalmradul.product_management.filters.LoggingFilter;
 
 @Configuration
 public class FilterConfiguration {

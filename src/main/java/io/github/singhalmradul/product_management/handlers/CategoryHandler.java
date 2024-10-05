@@ -12,4 +12,10 @@ public interface CategoryHandler {
     ServerResponse getCategory(ServerRequest request);
 
     ServerResponse addCategoryImages(ServerRequest request);
+
+    ServerResponse searchCategoriesByName(ServerRequest request);
+
+    ServerResponse updateCategory(ServerRequest request);
+
+    ServerResponse deleteCategory(ServerRequest request);
 }
