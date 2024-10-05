@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Component;
 
@@ -127,8 +128,14 @@ public class PdfServiceImpl implements PdfService {
 
                 ImageData imageData = null;
                 try {
-                    imageData = ImageDataFactory.create(product.getImages().get(0));
-                } catch (final MalformedURLException e) {
+                    imageData = ImageDataFactory.create(
+                        product
+                            .getImages()
+                            .stream()
+                            .findFirst()
+                            .orElseThrow()
+                    );
+                } catch (final MalformedURLException | NoSuchElementException e) {
                     log.error("Failed to load image: {}", e.getMessage());
                 }
                 final Image image = new Image(imageData);

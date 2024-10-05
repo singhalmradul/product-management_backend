@@ -9,8 +9,6 @@ public interface ProductService {
 
     Product saveProduct(Product products);
 
-    Product getProductByCode(String code);
-
     List<Product> getAllProducts();
 
     Product getProductById(String id);

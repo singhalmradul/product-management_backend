@@ -4,7 +4,9 @@ import static jakarta.persistence.EnumType.STRING;
 import static java.lang.String.format;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -29,7 +31,6 @@ public class Product {
     @AlphaNumericSequence
     private String id;
 
-
     private String code;
 
     private String name;
@@ -47,7 +48,7 @@ public class Product {
     @Embedded
     private Dimensions dimensions;
 
-    private List<String> images = new ArrayList<>();
+    private Set<String> images = new HashSet<>();
 
     private String description;
 
@@ -86,5 +87,24 @@ public class Product {
         } else {
             return format("%d g", weight);
         }
+    }
+
+    @Override
+    public int hashCode() {
+        if (id == null) {
+            return super.hashCode();
+        }
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (id == null) {
+            return super.equals(obj);
+        }
+        if (obj instanceof Product product) {
+            return id.equals(product.id);
+        }
+        return false;
     }
 }

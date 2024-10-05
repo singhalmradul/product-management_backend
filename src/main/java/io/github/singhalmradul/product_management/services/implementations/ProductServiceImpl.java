@@ -28,6 +28,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public Product saveProduct(final Product product) {
+
+        if(product.getId() != null) {
+            final var existingProduct = getProductById(product.getId());
+            for (final var image : existingProduct.getImages()) {
+                if (!product.getImages().contains(image)) {
+                    mediaService.deleteFile(image);
+                }
+            }
+        }
+
         final var categories = product
             .getCategories()
             .stream()
@@ -40,17 +50,6 @@ public class ProductServiceImpl implements ProductService {
         ;
         product.setCategories(categories);
         return repository.save(product);
-    }
-
-    @Override
-    public Product getProductByCode(final String code) {
-        return repository
-            .findByCode(code)
-            .orElseThrow(() -> new IllegalArgumentException(String.format(
-                "Product with code %s not found",
-                code
-            )))
-        ;
     }
 
     @Override

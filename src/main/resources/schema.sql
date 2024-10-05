@@ -33,6 +33,17 @@ CREATE TABLE IF NOT EXISTS product_category (
     FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS variation (
+    id VARCHAR(36) DEFAULT gen_random_uuid() PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS product_variation (
+    product_id VARCHAR(36) NOT NULL,
+    variation_id VARCHAR(36) NOT NULL,
+    PRIMARY KEY (product_id, variation_id),
+    FOREIGN KEY (product_id) REFERENCES product (id) ON DELETE CASCADE,
+    FOREIGN KEY (variation_id) REFERENCES variation (id) ON DELETE CASCADE
+);
 
 CREATE INDEX idx_product_name ON product USING GIN (name gin_trgm_ops);
 

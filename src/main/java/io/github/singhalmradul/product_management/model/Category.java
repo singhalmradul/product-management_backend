@@ -3,7 +3,9 @@ package io.github.singhalmradul.product_management.model;
 import static jakarta.persistence.EnumType.STRING;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -16,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -33,6 +36,7 @@ public class Category {
 
     private List<String> images = new ArrayList<>();
 
+    @ToString.Exclude
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -40,7 +44,7 @@ public class Category {
         joinColumns = @JoinColumn(name = "category_id"),
         inverseJoinColumns = @JoinColumn(name = "product_id")
     )
-    private List<Product> products = new ArrayList<>();
+    private Set<Product> products = new HashSet<>();
 
     private String description;
 

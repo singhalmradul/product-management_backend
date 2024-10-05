@@ -1,6 +1,7 @@
 package io.github.singhalmradul.product_management.services;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 
 public interface MediaService {
@@ -9,7 +10,7 @@ public interface MediaService {
 
     List<String> saveFiles(List<InputStream> inputStreams);
 
-    void deleteFile(String fileName);
+    boolean deleteFile(String imageUrl);
 
-    void deleteFiles(List<String> fileNames);
+    boolean deleteFiles(Collection<String> imageUrls);
 }

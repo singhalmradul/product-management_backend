@@ -18,29 +18,29 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-    private static final String CATEGORY_NAME_NOT_FOUND_TEMPLATE = "Category with name %s not found";
     private final CategoryRepository repository;
     private final MediaService mediaService;
 
     @Override
     public Category saveCategory(Category category) {
+
+        if (category.getId() != null) {
+            final var existingCategory = getCategoryById(category.getId());
+            for (final var image : existingCategory.getImages()) {
+                if (!category.getImages().contains(image)) {
+                    mediaService.deleteFile(image);
+                }
+            }
+        }
+
         return repository.save(category);
     }
 
     @Override
-    public Category getCategoryByName(String name) {
-        return repository
-            .findByName(name)
-            .orElseThrow(() -> new IllegalArgumentException(format(
-                CATEGORY_NAME_NOT_FOUND_TEMPLATE,
-                name
-            )))
-        ;
-    }
-
-    @Override
     public void deleteCategoryById(String id) {
-        repository.deleteById(id);
+        var category = getCategoryById(id);
+        mediaService.deleteFiles(category.getImages());
+        repository.delete(category);
     }
 
     @Override
