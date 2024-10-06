@@ -14,8 +14,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import lombok.Data;
 import lombok.ToString;
@@ -38,12 +36,7 @@ public class Category {
 
     @ToString.Exclude
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-        name = "product_category",
-        joinColumns = @JoinColumn(name = "category_id"),
-        inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
+    @ManyToMany(mappedBy="categories")
     private Set<Product> products = new HashSet<>();
 
     private String description;
@@ -51,5 +44,10 @@ public class Category {
     public Category addProduct(Product product) {
         products.add(product);
         return this;
+    }
+
+    public Category removeProduct(Product product) {
+        products.remove(product);
+            return this;
     }
 }

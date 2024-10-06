@@ -1,11 +1,11 @@
 package io.github.singhalmradul.product_management.model;
 
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.EnumType.STRING;
 import static java.lang.String.format;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -35,13 +35,13 @@ public class Product {
 
     private String name;
 
-    @ManyToMany
+    @ManyToMany(cascade={PERSIST, MERGE})
     @JoinTable(
-            name = "product_category",
-            inverseJoinColumns = @JoinColumn(name = "category_id"),
-            joinColumns = @JoinColumn(name = "product_id")
+        name = "product_category",
+        inverseJoinColumns = @JoinColumn(name = "category_id"),
+        joinColumns = @JoinColumn(name = "product_id")
     )
-    private List<Category> categories = new ArrayList<>();
+    private Set<Category> categories = new HashSet<>();
 
     private Integer weight;
 
@@ -54,9 +54,9 @@ public class Product {
 
     @ManyToOne
     @JoinTable(
-            name = "product_variation",
-            inverseJoinColumns = @JoinColumn(name = "variation_id"),
-            joinColumns = @JoinColumn(name = "product_id")
+        name = "product_variation",
+        inverseJoinColumns = @JoinColumn(name = "variation_id"),
+        joinColumns = @JoinColumn(name = "product_id")
     )
     private Variation variation;
 
@@ -64,16 +64,21 @@ public class Product {
     private Quantity.Unit unitPreference;
 
     public Quantity.Unit getUnitPreference() {
-        if (unitPreference == null) {
-            return categories.get(0).getUnitPreference();
+        if (unitPreference == null && !categories.isEmpty()) {
+            return categories
+                .stream()
+                .findFirst()
+                .get()
+                .getUnitPreference()
+            ;
         }
         return unitPreference;
     }
 
     @JsonIgnore
-    public List<Product> getVariants() {
+    public Set<Product> getVariants() {
         if (variation == null) {
-            return List.of(this);
+            return Set.of(this);
         }
         return variation.getProducts();
     }
@@ -83,10 +88,20 @@ public class Product {
             return "-";
         }
         if (weight >= 1000) {
-            return format("%.2f kg", weight / 1000.0);
+            return format("%.3f kg", weight / 1000.0);
         } else {
             return format("%d g", weight);
         }
+    }
+
+    public Product addCategory(Category category) {
+        categories.add(category);
+        return this;
+    }
+
+    public Product removeCategory(Category category) {
+        categories.remove(category);
+        return this;
     }
 
     @Override
