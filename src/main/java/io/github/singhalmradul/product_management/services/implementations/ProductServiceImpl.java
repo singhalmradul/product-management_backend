@@ -1,6 +1,7 @@
 package io.github.singhalmradul.product_management.services.implementations;
 
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toSet;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 import java.io.IOException;
@@ -25,12 +26,13 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryService categoryService;
     private final MediaService mediaService;
 
+
     @Override
     @Transactional
     public Product saveProduct(final Product product) {
-
-        if(product.getId() != null) {
+        if (product.getId() != null) {
             final var existingProduct = getProductById(product.getId());
+
             for (final var image : existingProduct.getImages()) {
                 if (!product.getImages().contains(image)) {
                     mediaService.deleteFile(image);
@@ -38,17 +40,17 @@ public class ProductServiceImpl implements ProductService {
             }
         }
 
-        final var categories = product
+        var categories = product
             .getCategories()
             .stream()
-            .map(category ->
-                categoryService
-                    .getReferenceById(category.getId())
-                    .addProduct(product)
+            .map(category -> categoryService
+                .getReferenceById(category.getId())
+                .addProduct(product)
             )
-            .toList()
-        ;
+            .collect(toSet());
+
         product.setCategories(categories);
+
         return repository.save(product);
     }
 

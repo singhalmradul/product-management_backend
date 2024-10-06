@@ -1,10 +1,9 @@
 package io.github.singhalmradul.product_management.model;
 
-import static jakarta.persistence.GenerationType.UUID;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.util.List;
-import java.util.UUID;
-
+import io.github.singhalmradul.product_management.utilities.identifier_generators.AlphaNumericSequence;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -18,8 +17,9 @@ import lombok.Data;
 public class Variation {
 
     @Id
-    @GeneratedValue(strategy = UUID)
-    private UUID id;
+    @GeneratedValue
+    @AlphaNumericSequence
+    private String id;
 
     @OneToMany
     @JoinTable(
@@ -27,5 +27,5 @@ public class Variation {
         inverseJoinColumns = @JoinColumn(name = "product_id"),
         joinColumns = @JoinColumn(name = "variation_id")
     )
-    private List<Product> products;
+    private Set<Product> products = new HashSet<>();
 }

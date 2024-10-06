@@ -1,8 +1,8 @@
 package io.github.singhalmradul.product_management.services.implementations;
 
+import static io.github.singhalmradul.product_management.utilities.identifier_generators.AlphaNumericIdentifierGenerator.generateRandomAlphaNumericString;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class CloudinaryMediaService implements MediaService {
 
-    private final String DIRECTORY = "product_management";
+    private static final String DIRECTORY = "product_management";
 
     private final Cloudinary cloudinary;
 
@@ -67,7 +67,7 @@ public class CloudinaryMediaService implements MediaService {
             "unique_filename", true,
             "overwrite", false,
             "resource_type", "auto",
-            "public_id", randomAlphanumeric(10)
+            "public_id", generateRandomAlphaNumericString(10)
         );
 
         try {
