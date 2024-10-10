@@ -1,3 +1,5 @@
+BEGIN TRANSACTION;
+
 INSERT INTO category (id, name, unit_preference, description, images) VALUES ('1', 'Fruits', 'KG', 'Fruits are good for health', ARRAY['https://i.ibb.co/Ksfwpms/bear-high-five.png']);
 INSERT INTO category (id, name, unit_preference, description, images) VALUES ('2', 'Vegetables', 'KG', 'Vegetables are good for health', ARRAY['https://i.ibb.co/pz2dWyC/cat-high-five.jpg']);
 INSERT INTO category (id, name, unit_preference, description, images) VALUES ('3', 'Dairy', 'BOXES', 'Dairy products are good for health', ARRAY['https://i.ibb.co/Z8YdR2N/lizard-high-five.png']);
@@ -80,3 +82,10 @@ INSERT INTO product_category (product_id, category_id) VALUES ('33', '8');
 INSERT INTO product_category (product_id, category_id) VALUES ('34', '8');
 INSERT INTO product_category (product_id, category_id) VALUES ('35', '8');
 INSERT INTO product_category (product_id, category_id) VALUES ('36', '8');
+
+INSERT INTO customer (id, name, phone_number, email, gstin, description) VALUES ('1', 'John Doe', '1234567890', 'doejohn@email.io', 'GSTIN123456', 'John Doe is a good customer');
+INSERT INTO customer (id, name, phone_number, email, gstin, description) VALUES ('2', 'Jane Doe', '1234567890', 'doejane@email.io', 'GSTIN123457', 'Jane Doe is a good customer');
+INSERT INTO customer (id, name, phone_number, email, gstin, description) VALUES ('3', 'John Smith', '1234567890', 'smithjohn@email.io', 'GSTIN123458', 'John Smith is a good customer');
+INSERT INTO customer (id, name, phone_number, email, gstin, description) VALUES ('4', 'Jane Smith', '1234567890', 'smithjane@email.io', 'GSTIN123459', 'Jane Smith is a good customer');
+
+COMMIT;

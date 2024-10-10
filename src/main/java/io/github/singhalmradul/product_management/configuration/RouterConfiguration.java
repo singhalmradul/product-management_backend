@@ -1,8 +1,10 @@
 package io.github.singhalmradul.product_management.configuration;
 
 import static io.github.singhalmradul.product_management.constants.PathVariable.CATEGORY_ID;
+import static io.github.singhalmradul.product_management.constants.PathVariable.CUSTOMER_ID;
 import static io.github.singhalmradul.product_management.constants.PathVariable.PRODUCT_ID;
 import static io.github.singhalmradul.product_management.constants.UriConstants.CATEGORIES;
+import static io.github.singhalmradul.product_management.constants.UriConstants.CUSTOMERS;
 import static io.github.singhalmradul.product_management.constants.UriConstants.GENERATE;
 import static io.github.singhalmradul.product_management.constants.UriConstants.IMAGES;
 import static io.github.singhalmradul.product_management.constants.UriConstants.INDEX;
@@ -22,6 +24,7 @@ import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerResponse;
 
 import io.github.singhalmradul.product_management.handlers.CategoryHandler;
+import io.github.singhalmradul.product_management.handlers.CustomerHandler;
 import io.github.singhalmradul.product_management.handlers.OrderHandler;
 import io.github.singhalmradul.product_management.handlers.ProductHandler;
 
@@ -69,6 +72,29 @@ public class RouterConfiguration {
                     )
                     .GET(INDEX, handler::getCategories)
                     .POST(INDEX, handler::createCategory)
+                )
+            )
+            .build()
+        ;
+    }
+
+    @Bean
+    RouterFunction<ServerResponse> customerRouter(CustomerHandler handler) {
+
+        return route()
+            .path(VERSION_1, builder -> builder
+                // /v1
+                .path(CUSTOMERS, builder1 -> builder1
+                    // /v1/customers
+                    .GET(SEARCH, handler::searchCustomersByName)
+                    .path(pathVariable(CUSTOMER_ID), builder2 -> builder2
+                        // /v1/customers/{customerId}
+                        .GET(INDEX, handler::getCustomer)
+                        .PUT(INDEX, handler::updateCustomer)
+                        .DELETE(INDEX, handler::deleteCustomer)
+                    )
+                    .GET(INDEX, handler::getAllCustomers)
+                    .POST(INDEX, handler::createCustomer)
                 )
             )
             .build()

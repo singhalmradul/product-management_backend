@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS product (
     length NUMERIC(5, 2),
     width NUMERIC(5, 2),
     height NUMERIC(5, 2),
-    images TEXT[] NOT NULL,
-    description TEXT,
+    images VARCHAR(255)[] NOT NULL,
+    description VARCHAR(255),
     unit_preference VARCHAR(10) CHECK (unit_preference IN ('KG', 'PCS', 'BOXES'))
 );
 
@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS category (
     id VARCHAR(36) DEFAULT gen_random_uuid() PRIMARY KEY,
     name VARCHAR(63) NOT NULL,
     unit_preference VARCHAR(10) CHECK (unit_preference IN ('KG', 'PCS', 'BOXES')) NOT NULL,
-    description TEXT,
-    images TEXT[] NOT NULL
+    description VARCHAR(255),
+    images VARCHAR(255)[] NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS product_category (
@@ -45,14 +45,26 @@ CREATE TABLE IF NOT EXISTS product_variation (
     FOREIGN KEY (variation_id) REFERENCES variation (id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_product_name ON product USING GIN (name gin_trgm_ops);
 
-CREATE INDEX idx_product_code ON product (code);
+CREATE TABLE IF NOT EXISTS customer (
+    id VARCHAR(36) DEFAULT gen_random_uuid() PRIMARY KEY,
+    name VARCHAR(63) NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
+    email VARCHAR(63),
+    gstin VARCHAR(15),
+    description VARCHAR(255)
+);
 
-CREATE INDEX idx_product_name_weight ON product (name, weight);
+CREATE INDEX IF NOT EXISTS idx_product_name ON product USING GIN (name gin_trgm_ops);
 
-CREATE INDEX idx_product_name_height ON product (name, height);
+CREATE INDEX IF NOT EXISTS idx_product_code ON product (code);
 
-CREATE INDEX idx_category_name ON category USING GIN (name gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS idx_product_name_weight ON product (name, weight);
+
+CREATE INDEX IF NOT EXISTS idx_product_name_height ON product (name, height);
+
+CREATE INDEX IF NOT EXISTS idx_category_name ON category USING GIN (name gin_trgm_ops);
+
+CREATE INDEX IF NOT EXISTS idx_customer_name ON customer USING GIN (name gin_trgm_ops);
 
 COMMIT;
