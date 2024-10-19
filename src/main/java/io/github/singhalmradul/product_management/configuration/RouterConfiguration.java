@@ -2,10 +2,10 @@ package io.github.singhalmradul.product_management.configuration;
 
 import static io.github.singhalmradul.product_management.constants.PathVariable.CATEGORY_ID;
 import static io.github.singhalmradul.product_management.constants.PathVariable.CUSTOMER_ID;
+import static io.github.singhalmradul.product_management.constants.PathVariable.ORDER_ID;
 import static io.github.singhalmradul.product_management.constants.PathVariable.PRODUCT_ID;
 import static io.github.singhalmradul.product_management.constants.UriConstants.CATEGORIES;
 import static io.github.singhalmradul.product_management.constants.UriConstants.CUSTOMERS;
-import static io.github.singhalmradul.product_management.constants.UriConstants.GENERATE;
 import static io.github.singhalmradul.product_management.constants.UriConstants.IMAGES;
 import static io.github.singhalmradul.product_management.constants.UriConstants.INDEX;
 import static io.github.singhalmradul.product_management.constants.UriConstants.ORDERS;
@@ -108,9 +108,11 @@ public class RouterConfiguration {
             .path(VERSION_1, builder -> builder
                 // /v1
                 .path(ORDERS, builder1 -> builder1
+                    .POST(INDEX, handler::createOrder)
+                    .GET(INDEX, handler::getAllOrders)
                     // /v1/orders
-                    .path(GENERATE, builder2 -> builder2
-                        // /v1/orders/generate
+                    .path(pathVariable(ORDER_ID), builder2 -> builder2
+                        // /v1/orders/{orderId}
                         .POST(PDF, handler::getOrderPdf)
                     )
                 )

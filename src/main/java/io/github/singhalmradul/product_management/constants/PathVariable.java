@@ -8,4 +8,5 @@ public class PathVariable {
     public static final String PRODUCT_ID="product-id";
     public static final String CATEGORY_ID="category-id";
     public static final String CUSTOMER_ID="customer-id";
+    public static final String ORDER_ID="order-id";
 }

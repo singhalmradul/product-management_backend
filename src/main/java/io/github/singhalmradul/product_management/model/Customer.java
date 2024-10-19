@@ -1,19 +1,16 @@
 package io.github.singhalmradul.product_management.model;
 
-import io.github.singhalmradul.product_management.utilities.identifier_generators.AlphaNumericSequence;
+import java.util.List;
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Entity
-public class Customer {
-
-    @Id
-    @GeneratedValue
-    @AlphaNumericSequence
-    private String id;
+public class Customer extends BaseEntity<Customer> {
 
     private String name;
 
@@ -24,4 +21,7 @@ public class Customer {
     private String gstin;
 
     private String description;
+
+    @OneToMany(targetEntity = OrderRequest.class, mappedBy = "customer")
+    private List<OrderRequest> orders;
 }

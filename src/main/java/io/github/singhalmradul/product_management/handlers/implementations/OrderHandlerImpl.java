@@ -1,9 +1,13 @@
 package io.github.singhalmradul.product_management.handlers.implementations;
 
+import static io.github.singhalmradul.product_management.constants.UriConstants.ORDERS;
+import static java.lang.String.format;
 import static org.springframework.web.servlet.function.ServerResponse.badRequest;
+import static org.springframework.web.servlet.function.ServerResponse.created;
 import static org.springframework.web.servlet.function.ServerResponse.ok;
 
 import java.io.IOException;
+import java.net.URI;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.function.ServerRequest;
@@ -30,5 +34,22 @@ public class OrderHandlerImpl implements OrderHandler {
         } catch (ServletException | IOException ex) {
             return badRequest().body(ex.getMessage());
         }
+    }
+
+    @Override
+    public ServerResponse createOrder(ServerRequest request) {
+
+        try {
+            var requestOrder = request.body(OrderRequest.class);
+            return created(URI.create(format("%s/%s", ORDERS, requestOrder.getId())))
+                    .body(orderService.saveOrder(requestOrder));
+        } catch (ServletException | IOException ex) {
+            return badRequest().body(ex.getMessage());
+        }
+    }
+
+    @Override
+    public ServerResponse getAllOrders(ServerRequest request) {
+        return ok().body(orderService.getAllOrders());
     }
 }

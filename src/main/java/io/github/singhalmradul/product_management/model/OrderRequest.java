@@ -3,24 +3,18 @@ package io.github.singhalmradul.product_management.model;
 import java.time.LocalDate;
 import java.util.List;
 
-import io.github.singhalmradul.product_management.utilities.identifier_generators.AlphaNumericSequence;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Entity
-public class OrderRequest {
-
-    @Id
-    @GeneratedValue
-    @AlphaNumericSequence
-    private String id;
+public class OrderRequest extends BaseEntity<OrderRequest> {
 
     @ManyToOne(targetEntity = Customer.class, optional = false)
     private Customer customer;

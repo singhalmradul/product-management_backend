@@ -6,4 +6,8 @@ import org.springframework.web.servlet.function.ServerResponse;
 public interface OrderHandler {
 
     ServerResponse getOrderPdf(ServerRequest request);
+
+    ServerResponse createOrder(ServerRequest request);
+
+    ServerResponse getAllOrders(ServerRequest request);
 }
