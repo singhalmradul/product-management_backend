@@ -4,10 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -23,11 +21,6 @@ public class OrderRequest extends BaseEntity<OrderRequest> {
 
     private String pdf;
 
-    @ManyToMany(targetEntity = OrderedProduct.class)
-    @JoinTable(
-        name = "order_product",
-        inverseJoinColumns = @JoinColumn(name = "product_id"),
-        joinColumns = @JoinColumn(name = "order_id")
-    )
+    @Transient
     private List<OrderedProduct> products;
 }

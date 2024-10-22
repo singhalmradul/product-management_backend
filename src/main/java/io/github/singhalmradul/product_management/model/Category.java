@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToMany;
@@ -27,6 +29,7 @@ public class Category extends BaseEntity<Category> {
     private List<String> images = new ArrayList<>();
 
     @ToString.Exclude
+    @JsonIgnore
     @ManyToMany(mappedBy="categories")
     private Set<Product> products = new HashSet<>();
 
