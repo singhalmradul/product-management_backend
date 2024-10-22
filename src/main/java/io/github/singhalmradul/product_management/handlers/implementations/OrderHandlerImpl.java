@@ -1,5 +1,6 @@
 package io.github.singhalmradul.product_management.handlers.implementations;
 
+import static io.github.singhalmradul.product_management.constants.PathVariable.ORDER_ID;
 import static io.github.singhalmradul.product_management.constants.UriConstants.ORDERS;
 import static java.lang.String.format;
 import static org.springframework.web.servlet.function.ServerResponse.badRequest;
@@ -28,12 +29,8 @@ public class OrderHandlerImpl implements OrderHandler {
     @Override
     public ServerResponse getOrderPdf(ServerRequest request) {
 
-        try {
-            var requestOrder = request.body(OrderRequest.class);
-            return ok().body(orderService.getOrderPdf(requestOrder));
-        } catch (ServletException | IOException ex) {
-            return badRequest().body(ex.getMessage());
-        }
+            var orderId = request.pathVariable(ORDER_ID);
+            return ok().body(orderService.getOrderPdf(orderId));
     }
 
     @Override
@@ -41,8 +38,9 @@ public class OrderHandlerImpl implements OrderHandler {
 
         try {
             var requestOrder = request.body(OrderRequest.class);
-            return created(URI.create(format("%s/%s", ORDERS, requestOrder.getId())))
-                    .body(orderService.saveOrder(requestOrder));
+            var order = orderService.saveOrder(requestOrder);
+            var uri = URI.create(format("%s/%s", ORDERS, order.getId()));
+            return created(uri).body(order);
         } catch (ServletException | IOException ex) {
             return badRequest().body(ex.getMessage());
         }

@@ -13,6 +13,8 @@ public interface ProductHandler {
 
     ServerResponse getProduct(ServerRequest request);
 
+    ServerResponse getProductByCode(ServerRequest request);
+
     ServerResponse addProductImages(ServerRequest request);
 
     ServerResponse searchProductsByName(ServerRequest request);

@@ -6,7 +6,7 @@ import io.github.singhalmradul.product_management.model.OrderRequest;
 
 public interface OrderService {
 
-    String getOrderPdf(OrderRequest orderRequest);
+    String getOrderPdf(String orderId);
 
     OrderRequest saveOrder(OrderRequest orderRequest);
 

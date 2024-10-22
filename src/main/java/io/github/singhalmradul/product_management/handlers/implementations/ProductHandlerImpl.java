@@ -1,5 +1,6 @@
 package io.github.singhalmradul.product_management.handlers.implementations;
 
+import static io.github.singhalmradul.product_management.constants.PathVariable.PRODUCT_CODE;
 import static io.github.singhalmradul.product_management.constants.PathVariable.PRODUCT_ID;
 import static io.github.singhalmradul.product_management.constants.RequestVariable.IMAGES;
 import static io.github.singhalmradul.product_management.constants.RequestVariable.QUERY;
@@ -72,16 +73,11 @@ public class ProductHandlerImpl implements ProductHandler{
 
     @Override
     public ServerResponse getProduct(ServerRequest request) {
-        try {
-            var productId = request.pathVariable(PRODUCT_ID);
-            return ok()
-                .contentType(APPLICATION_JSON)
-                .body(productService.getProductById(productId))
-            ;
-        } catch (Exception e) {
-            log.warn("Error while fetching product", e);
-            return badRequest().body(e.getMessage());
-        }
+        var productId = request.pathVariable(PRODUCT_ID);
+        return ok()
+            .contentType(APPLICATION_JSON)
+            .body(productService.getProductById(productId))
+        ;
     }
 
     @Override
@@ -101,27 +97,26 @@ public class ProductHandlerImpl implements ProductHandler{
 
     @Override
     public ServerResponse searchProductsByName(ServerRequest request) {
-        try {
-            var query = request.param(QUERY).orElseThrow();
-            return ok()
-                .contentType(APPLICATION_JSON)
-                .body(productService.searchProductsByName(query))
-            ;
-        } catch (Exception e) {
-            log.warn("Error while searching products", e);
-            return badRequest().body(e.getMessage());
-        }
+        var query = request.param(QUERY).orElseThrow();
+        return ok()
+            .contentType(APPLICATION_JSON)
+            .body(productService.searchProductsByName(query))
+        ;
     }
 
     @Override
     public ServerResponse deleteProduct(ServerRequest request) {
-        try {
-            var productId = request.pathVariable(PRODUCT_ID);
-            productService.deleteProduct(productId);
-            return ok().build();
-        } catch (Exception e) {
-            log.warn("Error while deleting product", e);
-            return badRequest().body(e.getMessage());
-        }
+        var productId = request.pathVariable(PRODUCT_ID);
+        productService.deleteProduct(productId);
+        return ok().build();
+    }
+
+    @Override
+    public ServerResponse getProductByCode(ServerRequest request) {
+        var productCode = request.pathVariable(PRODUCT_CODE);
+        return ok()
+            .contentType(APPLICATION_JSON)
+            .body(productService.getProductByCode(productCode))
+        ;
     }
 }

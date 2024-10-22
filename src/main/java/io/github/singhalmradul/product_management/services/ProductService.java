@@ -13,6 +13,8 @@ public interface ProductService {
 
     Product getProductById(String id);
 
+    Product getProductByCode(String code);
+
     List<String> addProductImages(String productId, List<Part> images);
 
     List<Product> searchProductsByName(String query);

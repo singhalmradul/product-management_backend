@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import io.github.singhalmradul.product_management.model.OrderRequest;
-import io.github.singhalmradul.product_management.model.OrderedProduct;
+import io.github.singhalmradul.product_management.model.ProductWithQuantityRecord;
 
 public interface OrderRepository extends JpaRepository<OrderRequest, String> {
 
@@ -17,5 +17,5 @@ public interface OrderRepository extends JpaRepository<OrderRequest, String> {
         JOIN product p ON op.product_id = p.id
         WHERE op.order_id = :orderId
     """, nativeQuery = true)
-    List<OrderedProduct> findByOrderId(@Param("orderId") String orderId);
+    List<ProductWithQuantityRecord> findByOrderId(@Param("orderId") String orderId);
 }

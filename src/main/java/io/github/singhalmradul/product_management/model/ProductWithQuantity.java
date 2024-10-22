@@ -1,6 +1,6 @@
 package io.github.singhalmradul.product_management.model;
 
-public interface OrderedProduct extends ProductProjection {
+public interface ProductWithQuantity extends ProductProjection {
 
     Integer getAmount();
     Quantity.Unit getUnit();
