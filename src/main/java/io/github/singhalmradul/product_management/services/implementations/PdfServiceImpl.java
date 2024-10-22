@@ -102,13 +102,12 @@ public class PdfServiceImpl implements PdfService {
 
     private BlockElement<?> productDetails(final List<OrderedProduct> products) {
         final var productTable = new Table(getTableWidths(1, 1));
-        products.forEach(orderProduct -> {
+        products.forEach(product -> {
 
             final var productDetails = new Table(getTableWidths(1, 2));
-            final var product = orderProduct.getProduct();
             addKeyValueBorderless(productDetails, "Code", product.getCode());
             addKeyValueBorderless(productDetails, "Name", product.getName());
-            addKeyValueBorderless(productDetails, "Quantity", orderProduct.getQuantity());
+            addKeyValueBorderless(productDetails, "Quantity", product.getQuantity());
             addKeyValueBorderless(productDetails, "Weight", product.getWeightString());
 
             if (!product.getCategories().isEmpty()) {

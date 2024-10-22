@@ -11,10 +11,8 @@ import io.github.singhalmradul.product_management.model.Product;
 public interface ProductRepository extends JpaRepository<Product, String> {
 
     @Query(value = """
-        SELECT p.*, pv.* -- , v.*
+        SELECT p.*
         FROM product p
-        LEFT JOIN product_variation pv ON p.id = pv.product_id
-        -- LEFT JOIN variation v ON pv.variation_id = v.id
         WHERE p.name % :query
         ORDER BY similarity(p.name, :query) DESC
         """,

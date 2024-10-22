@@ -3,11 +3,11 @@ package io.github.singhalmradul.product_management.model;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public record Quantity(int value, Unit unit) {
+public record Quantity(int amount, Unit unit) {
 
     public Quantity {
-        if (value <= 0) {
-            throw new IllegalArgumentException(String.format("Invalid quantity: %d %s", value, unit));
+        if (amount <= 0) {
+            throw new IllegalArgumentException(String.format("Invalid quantity: %d %s", amount, unit));
         }
     }
 
@@ -18,7 +18,7 @@ public record Quantity(int value, Unit unit) {
     @Override
     public String toString() {
         return new StringBuilder()
-            .append(value)
+            .append(amount)
             .append(' ')
             .append(unit)
             .toString()
