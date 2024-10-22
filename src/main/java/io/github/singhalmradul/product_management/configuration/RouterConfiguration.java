@@ -3,8 +3,10 @@ package io.github.singhalmradul.product_management.configuration;
 import static io.github.singhalmradul.product_management.constants.PathVariable.CATEGORY_ID;
 import static io.github.singhalmradul.product_management.constants.PathVariable.CUSTOMER_ID;
 import static io.github.singhalmradul.product_management.constants.PathVariable.ORDER_ID;
+import static io.github.singhalmradul.product_management.constants.PathVariable.PRODUCT_CODE;
 import static io.github.singhalmradul.product_management.constants.PathVariable.PRODUCT_ID;
 import static io.github.singhalmradul.product_management.constants.UriConstants.CATEGORIES;
+import static io.github.singhalmradul.product_management.constants.UriConstants.CODE;
 import static io.github.singhalmradul.product_management.constants.UriConstants.CUSTOMERS;
 import static io.github.singhalmradul.product_management.constants.UriConstants.IMAGES;
 import static io.github.singhalmradul.product_management.constants.UriConstants.INDEX;
@@ -40,6 +42,10 @@ public class RouterConfiguration {
                 .path(PRODUCTS, builder1 -> builder1
                     // /v1/products
                     .GET(SEARCH, handler::searchProductsByName)
+                    .path(CODE, builder2 -> builder2
+                        // /v1/products/code
+                        .GET(pathVariable(PRODUCT_CODE), handler::getProductByCode)
+                    )
                     .path(pathVariable(PRODUCT_ID), builder2 -> builder2
                         // /v1/products/{productId}
                         .POST(IMAGES, contentType(MULTIPART_FORM_DATA), handler::addProductImages)

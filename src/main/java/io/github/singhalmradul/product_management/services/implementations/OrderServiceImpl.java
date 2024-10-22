@@ -23,7 +23,19 @@ public class OrderServiceImpl implements OrderService{
     private final MediaService mediaService;
 
     @Override
-    public String getOrderPdf(OrderRequest orderRequest) {
+    public String getOrderPdf(String orderId) {
+
+        final var orderRequest = repository.findById(orderId).orElse(null);
+
+        if (orderRequest == null) {
+            log.error("Order not found for id: {}", orderId);
+            return null;
+        }
+
+        if (orderRequest.getId() != null) {
+            return orderRequest.getPdf();
+        }
+
         final var pdf = pdfService.generateOrderPdf(orderRequest);
         try (var inputStream = pdf.toURI().toURL().openStream()) {
             return mediaService.saveFile(inputStream);

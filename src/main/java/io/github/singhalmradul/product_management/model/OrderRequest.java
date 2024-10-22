@@ -22,5 +22,7 @@ public class OrderRequest extends BaseEntity<OrderRequest> {
     private String pdf;
 
     @Transient
-    private List<OrderedProduct> products;
+    private List<ProductWithQuantityRecord> products;
+
+    private boolean fulfilled;
 }
