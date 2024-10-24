@@ -15,7 +15,7 @@ import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;
 
 import io.github.singhalmradul.product_management.handlers.OrderHandler;
-import io.github.singhalmradul.product_management.model.OrderRequest;
+import io.github.singhalmradul.product_management.model.entities.OrderRequest;
 import io.github.singhalmradul.product_management.services.OrderService;
 import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;

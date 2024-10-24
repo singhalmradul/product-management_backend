@@ -1,4 +1,4 @@
-package io.github.singhalmradul.product_management.model;
+package io.github.singhalmradul.product_management.model.embeddables;
 
 import jakarta.persistence.Embeddable;
 import lombok.Data;

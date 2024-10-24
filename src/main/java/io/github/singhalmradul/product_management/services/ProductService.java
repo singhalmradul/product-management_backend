@@ -2,7 +2,7 @@ package io.github.singhalmradul.product_management.services;
 
 import java.util.List;
 
-import io.github.singhalmradul.product_management.model.Product;
+import io.github.singhalmradul.product_management.model.entities.Product;
 import jakarta.servlet.http.Part;
 
 public interface ProductService {

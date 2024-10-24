@@ -10,7 +10,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.singhalmradul.product_management.model.Product;
+import io.github.singhalmradul.product_management.model.entities.Product;
 import io.github.singhalmradul.product_management.repositories.ProductRepository;
 import io.github.singhalmradul.product_management.services.CategoryService;
 import io.github.singhalmradul.product_management.services.MediaService;

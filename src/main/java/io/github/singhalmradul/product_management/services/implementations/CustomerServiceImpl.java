@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import io.github.singhalmradul.product_management.model.Customer;
+import io.github.singhalmradul.product_management.model.entities.Customer;
 import io.github.singhalmradul.product_management.repositories.CustomerRepository;
 import io.github.singhalmradul.product_management.services.CustomerService;
 import lombok.RequiredArgsConstructor;

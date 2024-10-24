@@ -2,7 +2,7 @@ package io.github.singhalmradul.product_management.services;
 
 import java.util.List;
 
-import io.github.singhalmradul.product_management.model.Customer;
+import io.github.singhalmradul.product_management.model.entities.Customer;
 
 public interface CustomerService {
     Customer saveCustomer(Customer customer);

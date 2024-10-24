@@ -13,7 +13,7 @@ import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;
 
 import io.github.singhalmradul.product_management.handlers.CustomerHandler;
-import io.github.singhalmradul.product_management.model.Customer;
+import io.github.singhalmradul.product_management.model.entities.Customer;
 import io.github.singhalmradul.product_management.services.CustomerService;
 import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
