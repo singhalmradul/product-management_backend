@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import io.github.singhalmradul.product_management.model.Category;
+import io.github.singhalmradul.product_management.model.entities.Category;
 import io.github.singhalmradul.product_management.repositories.CategoryRepository;
 import io.github.singhalmradul.product_management.services.CategoryService;
 import io.github.singhalmradul.product_management.services.MediaService;

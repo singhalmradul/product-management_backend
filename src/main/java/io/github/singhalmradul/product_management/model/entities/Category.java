@@ -1,4 +1,4 @@
-package io.github.singhalmradul.product_management.model;
+package io.github.singhalmradul.product_management.model.entities;
 
 import static jakarta.persistence.EnumType.STRING;
 
@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.github.singhalmradul.product_management.model.embeddables.Quantity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToMany;
@@ -19,7 +20,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Entity
-public class Category extends BaseEntity<Category> {
+public class Category extends IdentifiableEntity<Category> {
 
     private String name;
 

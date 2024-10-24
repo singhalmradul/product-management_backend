@@ -1,4 +1,4 @@
-package io.github.singhalmradul.product_management.model;
+package io.github.singhalmradul.product_management.model.entities;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Entity
-public class Customer extends BaseEntity<Customer> {
+public class Customer extends IdentifiableEntity<Customer> {
 
     private String name;
 

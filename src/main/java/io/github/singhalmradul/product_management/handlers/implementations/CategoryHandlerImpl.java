@@ -15,7 +15,7 @@ import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;
 
 import io.github.singhalmradul.product_management.handlers.CategoryHandler;
-import io.github.singhalmradul.product_management.model.Category;
+import io.github.singhalmradul.product_management.model.entities.Category;
 import io.github.singhalmradul.product_management.services.CategoryService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Part;

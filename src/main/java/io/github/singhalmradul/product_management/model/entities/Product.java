@@ -1,4 +1,4 @@
-package io.github.singhalmradul.product_management.model;
+package io.github.singhalmradul.product_management.model.entities;
 
 import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
@@ -7,6 +7,8 @@ import static jakarta.persistence.EnumType.STRING;
 import java.util.HashSet;
 import java.util.Set;
 
+import io.github.singhalmradul.product_management.model.embeddables.Quantity;
+import io.github.singhalmradul.product_management.model.projections.ProductProjection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
@@ -18,7 +20,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Entity
-public class Product extends BaseEntity<Product> implements ProductProjection {
+public class Product extends IdentifiableEntity<Product> implements ProductProjection {
 
     private String code;
 

@@ -2,7 +2,7 @@ package io.github.singhalmradul.product_management.services;
 
 import java.util.List;
 
-import io.github.singhalmradul.product_management.model.Category;
+import io.github.singhalmradul.product_management.model.entities.Category;
 import jakarta.servlet.http.Part;
 
 public interface CategoryService {

@@ -1,8 +1,10 @@
-package io.github.singhalmradul.product_management.model;
+package io.github.singhalmradul.product_management.model.projections;
 
 import static java.lang.String.format;
 
 import java.util.Collection;
+
+import io.github.singhalmradul.product_management.model.entities.Category;
 
 public interface ProductProjection {
 

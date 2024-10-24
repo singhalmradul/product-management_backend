@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import io.github.singhalmradul.product_management.model.Customer;
+import io.github.singhalmradul.product_management.model.entities.Customer;
 
 public interface CustomerRepository extends JpaRepository<Customer, String> {
 
