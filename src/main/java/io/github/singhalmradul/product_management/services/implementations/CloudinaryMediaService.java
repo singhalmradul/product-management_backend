@@ -1,6 +1,5 @@
 package io.github.singhalmradul.product_management.services.implementations;
 
-import static io.github.singhalmradul.product_management.utilities.identifier_generators.AlphaNumericIdentifierGenerator.generateRandomAlphaNumericString;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -10,6 +9,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
@@ -67,7 +67,7 @@ public class CloudinaryMediaService implements MediaService {
             "unique_filename", true,
             "overwrite", false,
             "resource_type", "auto",
-            "public_id", generateRandomAlphaNumericString(10)
+            "public_id", UUID.randomUUID().toString()
         );
 
         try {

@@ -6,6 +6,7 @@ import static jakarta.persistence.EnumType.STRING;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import io.github.singhalmradul.product_management.model.embeddables.Quantity;
 import io.github.singhalmradul.product_management.model.projections.ProductProjection;
@@ -41,7 +42,7 @@ public class Product extends IdentifiableEntity<Product> implements ProductProje
     @Enumerated(STRING)
     private Quantity.Unit unitPreference;
 
-    private String variantGroupId;
+    private UUID variantGroupId;
 
     @ManyToMany(cascade = { PERSIST, MERGE })
     @JoinTable(

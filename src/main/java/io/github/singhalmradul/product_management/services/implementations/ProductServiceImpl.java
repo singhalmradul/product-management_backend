@@ -6,6 +6,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,7 +60,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductById(final String id) {
+    public Product getProductById(final UUID id) {
         return repository
                 .findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format(
@@ -70,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public List<String> addProductImages(final String productId, final List<Part> images) {
+    public List<String> addProductImages(final UUID productId, final List<Part> images) {
         if (isEmpty(images)) {
             return emptyList();
         }
@@ -97,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void deleteProduct(final String id) {
+    public void deleteProduct(final UUID id) {
         final var product = getProductById(id);
         mediaService.deleteFiles(product.getImages());
         repository.delete(product);

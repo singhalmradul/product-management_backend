@@ -13,7 +13,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TABLE IF NOT EXISTS product (
-    id VARCHAR(36) DEFAULT gen_random_uuid() PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     code VARCHAR(15) NOT NULL,
     name VARCHAR(63) NOT NULL,
     weight INTEGER CHECK (weight >= 0) NOT NULL,
@@ -23,13 +23,13 @@ CREATE TABLE IF NOT EXISTS product (
     images VARCHAR(255)[] NOT NULL,
     description VARCHAR(255),
     unit_preference VARCHAR(10) CHECK (unit_preference IN ('KG', 'PCS', 'BOXES')),
-    variant_group_id VARCHAR(36),
+    variant_group_id UUID,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS category (
-    id VARCHAR(36) DEFAULT gen_random_uuid() PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name VARCHAR(63) NOT NULL,
     unit_preference VARCHAR(10) CHECK (unit_preference IN ('KG', 'PCS', 'BOXES')) NOT NULL,
     description VARCHAR(255),
@@ -39,8 +39,8 @@ CREATE TABLE IF NOT EXISTS category (
 );
 
 CREATE TABLE IF NOT EXISTS product_category (
-    product_id VARCHAR(36) NOT NULL,
-    category_id VARCHAR(36) NOT NULL,
+    product_id UUID NOT NULL,
+    category_id UUID NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (product_id, category_id),
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS product_category (
 
 
 CREATE TABLE IF NOT EXISTS customer (
-    id VARCHAR(36) DEFAULT gen_random_uuid() PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name VARCHAR(63) NOT NULL,
     phone_number VARCHAR(15) NOT NULL,
     email VARCHAR(63),
@@ -61,21 +61,20 @@ CREATE TABLE IF NOT EXISTS customer (
 );
 
 CREATE TABLE IF NOT EXISTS order_request (
-    id VARCHAR(36) DEFAULT gen_random_uuid() PRIMARY KEY,
-    customer_id VARCHAR(36) NOT NULL,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    customer_id UUID NOT NULL,
     date DATE NOT NULL,
-    pdf VARCHAR(255),
-    fulfilled BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (customer_id) REFERENCES customer (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS order_product (
-    order_id VARCHAR(36) NOT NULL,
-    product_id VARCHAR(36) NOT NULL,
+    order_id UUID NOT NULL,
+    product_id UUID NOT NULL,
     amount INTEGER CHECK (amount >= 0) NOT NULL,
     unit VARCHAR(10) CHECK (unit IN ('KG', 'PCS', 'BOXES')),
+    completed BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (order_id, product_id),

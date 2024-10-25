@@ -13,6 +13,7 @@ import static org.springframework.web.servlet.function.ServerResponse.ok;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.function.ServerRequest;
@@ -50,14 +51,15 @@ public class ProductHandlerImpl implements ProductHandler{
     @Override
     public ServerResponse updateProduct(ServerRequest request) {
         try {
-            var id = request.pathVariable(PRODUCT_ID);
+            var productId = request.pathVariable(PRODUCT_ID);
+            var id = UUID.fromString(productId);
             var product = request.body(Product.class);
             product.setId(id);
             return ok()
                 .contentType(APPLICATION_JSON)
                 .body(productService.saveProduct(product))
             ;
-        } catch (ServletException | IOException e) {
+        } catch (ServletException | IOException | IllegalArgumentException e) {
             log.warn("Error while updating product", e);
             return badRequest().body(e.getMessage());
         }
@@ -73,23 +75,30 @@ public class ProductHandlerImpl implements ProductHandler{
 
     @Override
     public ServerResponse getProduct(ServerRequest request) {
-        var productId = request.pathVariable(PRODUCT_ID);
-        return ok()
-            .contentType(APPLICATION_JSON)
-            .body(productService.getProductById(productId))
-        ;
+        try {
+            var productId = request.pathVariable(PRODUCT_ID);
+            var id = UUID.fromString(productId);
+            return ok()
+                .contentType(APPLICATION_JSON)
+                .body(productService.getProductById(id))
+            ;
+        } catch (IllegalArgumentException e) {
+            log.warn("Error while fetching product", e);
+            return badRequest().body(e.getMessage());
+        }
     }
 
     @Override
     public ServerResponse addProductImages(ServerRequest request) {
         try {
             var productId = request.pathVariable(PRODUCT_ID);
+            var id = UUID.fromString(productId);
             var images = request.multipartData().get(IMAGES);
             return ok()
                 .contentType(APPLICATION_JSON)
-                .body(productService.addProductImages(productId, images))
+                .body(productService.addProductImages(id, images))
             ;
-        } catch (ServletException | IOException e) {
+        } catch (ServletException | IOException | IllegalArgumentException e) {
             log.warn("Error while adding product images", e);
             return badRequest().body(e.getMessage());
         }
@@ -106,9 +115,15 @@ public class ProductHandlerImpl implements ProductHandler{
 
     @Override
     public ServerResponse deleteProduct(ServerRequest request) {
-        var productId = request.pathVariable(PRODUCT_ID);
-        productService.deleteProduct(productId);
-        return ok().build();
+        try {
+            var productId = request.pathVariable(PRODUCT_ID);
+            var id = UUID.fromString(productId);
+            productService.deleteProduct(id);
+            return ok().build();
+        } catch (IllegalArgumentException e) {
+            log.warn("Error while deleting product", e);
+            return badRequest().body(e.getMessage());
+        }
     }
 
     @Override

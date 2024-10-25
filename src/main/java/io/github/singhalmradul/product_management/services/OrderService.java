@@ -1,17 +1,18 @@
 package io.github.singhalmradul.product_management.services;
 
 import java.util.List;
+import java.util.UUID;
 
 import io.github.singhalmradul.product_management.model.entities.OrderRequest;
-import io.github.singhalmradul.product_management.model.response.UriResponse;
+import io.github.singhalmradul.product_management.model.request.OrderRequestObject;
 
 public interface OrderService {
 
-    UriResponse getOrderPdf(String orderId);
+    byte[] getOrderPdf(UUID orderId);
 
-    OrderRequest getOrderById(String id);
+    OrderRequest getOrderById(UUID id);
 
-    OrderRequest saveOrder(OrderRequest orderRequest);
+    OrderRequest saveOrder(OrderRequestObject order);
 
     List<OrderRequest> getAllOrders();
 }

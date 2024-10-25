@@ -1,6 +1,7 @@
 package io.github.singhalmradul.product_management.services;
 
 import java.util.List;
+import java.util.UUID;
 
 import io.github.singhalmradul.product_management.model.entities.Category;
 import jakarta.servlet.http.Part;
@@ -9,15 +10,15 @@ public interface CategoryService {
 
     Category saveCategory(Category category);
 
-    void deleteCategoryById(String id);
+    void deleteCategoryById(UUID id);
 
     List<Category> getCategories();
 
-    Category getCategoryById(String id);
+    Category getCategoryById(UUID id);
 
-    List<String> addCategoryImages(String categoryId, List<Part> images);
+    List<String> addCategoryImages(UUID categoryId, List<Part> images);
 
-    Category getReferenceById(String id);
+    Category getReferenceById(UUID id);
 
     List<Category> findByNameSimilar(String name);
 }

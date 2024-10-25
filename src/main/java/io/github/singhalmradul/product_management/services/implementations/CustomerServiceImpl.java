@@ -1,6 +1,7 @@
 package io.github.singhalmradul.product_management.services.implementations;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void deleteCustomerById(String id) {
+    public void deleteCustomerById(UUID id) {
         repository.deleteById(id);
     }
 
@@ -31,7 +32,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer getCustomerById(String id) {
+    public Customer getCustomerById(UUID id) {
         return repository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format(
             "Customer with id %s not found",
             id
@@ -39,7 +40,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer getReferenceById(String id) {
+    public Customer getReferenceById(UUID id) {
         return repository.getReferenceById(id);
     }
 

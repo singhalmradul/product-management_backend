@@ -7,6 +7,7 @@ import static org.springframework.web.servlet.function.ServerResponse.badRequest
 import static org.springframework.web.servlet.function.ServerResponse.ok;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.function.ServerRequest;
@@ -50,11 +51,17 @@ public class CustomerHandlerImpl implements CustomerHandler {
 
     @Override
     public ServerResponse getCustomer(ServerRequest request) {
-        var customerId = request.pathVariable(CUSTOMER_ID);
-        return ok()
-            .contentType(APPLICATION_JSON)
-            .body(customerService.getCustomerById(customerId))
-        ;
+        try {
+            var customerId = request.pathVariable(CUSTOMER_ID);
+            var id = UUID.fromString(customerId);
+            return ok()
+                .contentType(APPLICATION_JSON)
+                .body(customerService.getCustomerById(id))
+            ;
+        } catch (IllegalArgumentException e) {
+            log.warn("Error while fetching Customer", e);
+            return badRequest().body(e.getMessage());
+        }
     }
 
     @Override
@@ -68,22 +75,29 @@ public class CustomerHandlerImpl implements CustomerHandler {
 
     @Override
     public ServerResponse deleteCustomer(ServerRequest request) {
-        var customerId = request.pathVariable(CUSTOMER_ID);
-        customerService.deleteCustomerById(customerId);
-        return ok().build();
+        try {
+            var customerId = request.pathVariable(CUSTOMER_ID);
+            var id = UUID.fromString(customerId);
+            customerService.deleteCustomerById(id);
+            return ok().build();
+        } catch (IllegalArgumentException e) {
+            log.warn("Error while deleting Customer", e);
+            return badRequest().body(e.getMessage());
+        }
     }
 
     @Override
     public ServerResponse updateCustomer(ServerRequest request) {
         try {
-            var id = request.pathVariable(CUSTOMER_ID);
+            var customerId = request.pathVariable(CUSTOMER_ID);
+            var id = UUID.fromString(customerId);
             var customer = request.body(Customer.class);
             customer.setId(id);
             return ok()
                 .contentType(APPLICATION_JSON)
                 .body(customerService.saveCustomer(customer))
             ;
-        } catch (ServletException | IOException e) {
+        } catch (ServletException | IOException | IllegalArgumentException e) {
             log.warn("Error while updating Customer", e);
             return badRequest().body(e.getMessage());
         }

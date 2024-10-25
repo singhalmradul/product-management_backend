@@ -9,6 +9,7 @@ import static org.springframework.web.servlet.function.ServerResponse.ok;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.function.ServerRequest;
@@ -53,24 +54,30 @@ public class CategoryHandlerImpl implements CategoryHandler {
 
     @Override
     public ServerResponse getCategory(ServerRequest request) {
-        var categoryId = request.pathVariable(CATEGORY_ID);
-        return ok()
-            .contentType(APPLICATION_JSON)
-            .body(categoryService.getCategoryById(categoryId))
-        ;
+        try {
+            var categoryId = request.pathVariable(CATEGORY_ID);
+            var id = UUID.fromString(categoryId);
+            return ok()
+                .contentType(APPLICATION_JSON)
+                .body(categoryService.getCategoryById(id))
+            ;
+        } catch (IllegalArgumentException e) {
+            log.warn("Error while fetching category", e);
+            return badRequest().body(e.getMessage());
+        }
     }
 
     @Override
     public ServerResponse addCategoryImages(ServerRequest request) {
-        var categoryId = request.pathVariable(CATEGORY_ID);
-        List<Part> images;
         try {
-            images = request.multipartData().get(IMAGES);
+            var categoryId = request.pathVariable(CATEGORY_ID);
+            var id = UUID.fromString(categoryId);
+            List<Part> images = request.multipartData().get(IMAGES);
             return ok()
             .contentType(APPLICATION_JSON)
-            .body(categoryService.addCategoryImages(categoryId, images))
+            .body(categoryService.addCategoryImages(id, images))
         ;
-        } catch (IOException | ServletException e) {
+        } catch (IOException | ServletException | IllegalArgumentException e) {
             log.warn("Error while adding images to category", e);
             return badRequest().body(e.getMessage());
         }
@@ -88,22 +95,29 @@ public class CategoryHandlerImpl implements CategoryHandler {
 
     @Override
     public ServerResponse deleteCategory(ServerRequest request) {
-        var categoryId = request.pathVariable(CATEGORY_ID);
-        categoryService.deleteCategoryById(categoryId);
-        return ok().build();
+        try {
+            var categoryId = request.pathVariable(CATEGORY_ID);
+            var id = UUID.fromString(categoryId);
+            categoryService.deleteCategoryById(id);
+            return ok().build();
+        } catch (IllegalArgumentException e) {
+            log.warn("Error while deleting category", e);
+            return badRequest().body(e.getMessage());
+        }
     }
 
     @Override
     public ServerResponse updateCategory(ServerRequest request) {
         try {
-            var id = request.pathVariable(CATEGORY_ID);
+            var categoryId = request.pathVariable(CATEGORY_ID);
+            var id = UUID.fromString(categoryId);
             var category = request.body(Category.class);
             category.setId(id);
             return ok()
                 .contentType(APPLICATION_JSON)
                 .body(categoryService.saveCategory(category))
             ;
-        } catch (ServletException | IOException e) {
+        } catch (ServletException | IOException | IllegalArgumentException e) {
             log.warn("Error while updating category", e);
             return badRequest().body(e.getMessage());
         }
