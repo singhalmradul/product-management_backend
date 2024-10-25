@@ -26,6 +26,8 @@ public class OrderProduct extends AuditableEntity {
     @Embedded
     private Quantity quantity;
 
+    private boolean completed;
+
     @Id
     @ManyToOne(optional = false)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
@@ -51,5 +53,9 @@ public class OrderProduct extends AuditableEntity {
     @Override
     public int hashCode() {
         return hash(product, order);
+    }
+
+    public boolean isPending() {
+        return !completed;
     }
 }

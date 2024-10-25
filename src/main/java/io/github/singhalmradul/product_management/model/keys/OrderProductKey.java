@@ -4,8 +4,9 @@ import static java.util.Objects.hash;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
-public record OrderProductKey(String order, String product) implements Serializable {
+public record OrderProductKey(UUID order, UUID product) implements Serializable {
 
     @Override
     public boolean equals(Object o) {

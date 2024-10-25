@@ -4,6 +4,7 @@ import static java.lang.String.format;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategoryById(String id) {
+    public void deleteCategoryById(UUID id) {
         var category = getCategoryById(id);
         mediaService.deleteFiles(category.getImages());
         repository.delete(category);
@@ -49,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getCategoryById(String id) {
+    public Category getCategoryById(UUID id) {
         return repository
             .findById(id)
             .orElseThrow(() -> new IllegalArgumentException(format(
@@ -60,7 +61,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<String> addCategoryImages(String categoryId, List<Part> images) {
+    public List<String> addCategoryImages(UUID categoryId, List<Part> images) {
         var category = getCategoryById(categoryId);
         var imageUrls = mediaService.saveFiles(images.stream().map(part -> {
             try {
@@ -74,7 +75,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getReferenceById(String id) {
+    public Category getReferenceById(UUID id) {
         return repository.getReferenceById(id);
     }
 

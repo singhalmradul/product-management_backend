@@ -119,7 +119,7 @@ public class RouterConfiguration {
                     // /v1/orders
                     .path(pathVariable(ORDER_ID), builder2 -> builder2
                         // /v1/orders/{orderId}
-                        .POST(PDF, handler::getOrderPdf)
+                        .GET(PDF, handler::getOrderPdf)
                     )
                 )
             )

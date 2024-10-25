@@ -1,8 +1,10 @@
 package io.github.singhalmradul.product_management.model.entities;
 
-import java.util.Objects;
+import static jakarta.persistence.GenerationType.UUID;
 
-import io.github.singhalmradul.product_management.utilities.identifier_generators.AlphaNumericSequence;
+import java.util.Objects;
+import java.util.UUID;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
@@ -13,9 +15,8 @@ import lombok.Data;
 public abstract class IdentifiableEntity<T> extends AuditableEntity{
 
     @Id
-    @GeneratedValue
-    @AlphaNumericSequence
-    private String id;
+    @GeneratedValue(strategy = UUID)
+    private UUID id;
 
     @Override
     public boolean equals(Object o) {
