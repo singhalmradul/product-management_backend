@@ -48,6 +48,7 @@ public class RouterConfiguration {
                     )
                     .path(pathVariable(PRODUCT_ID), builder2 -> builder2
                         // /v1/products/{productId}
+                        .GET(PDF, handler::getProductPdf)
                         .POST(IMAGES, contentType(MULTIPART_FORM_DATA), handler::addProductImages)
                         .GET(INDEX, handler::getProduct)
                         .PUT(INDEX, handler::updateProduct)

@@ -1,5 +1,9 @@
 package io.github.singhalmradul.product_management.services.implementations;
 
+import static java.nio.file.Files.createTempFile;
+import static java.nio.file.Files.deleteIfExists;
+import static java.nio.file.Files.newOutputStream;
+import static java.nio.file.Files.readAllBytes;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -15,17 +19,23 @@ import io.github.singhalmradul.product_management.model.entities.Product;
 import io.github.singhalmradul.product_management.repositories.ProductRepository;
 import io.github.singhalmradul.product_management.services.CategoryService;
 import io.github.singhalmradul.product_management.services.MediaService;
+import io.github.singhalmradul.product_management.services.PdfService;
 import io.github.singhalmradul.product_management.services.ProductService;
 import jakarta.servlet.http.Part;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
     private final ProductRepository repository;
     private final CategoryService categoryService;
     private final MediaService mediaService;
+    private final PdfService pdfService;
 
     @Override
     @Transactional
@@ -109,4 +119,39 @@ public class ProductServiceImpl implements ProductService {
         return repository.findByCode(code).orElseThrow()    ;
     }
 
+    @Override
+    public byte[] getProductPdf(UUID productId) {
+
+        var product = getProductById(productId);
+        try {
+            var path = createTempFile(
+                product.getCode(),
+                ".pdf"
+            );
+
+
+            try (var out = newOutputStream(path)) {
+
+                if(pdfService.generateProductPdf(product, out))
+                    return readAllBytes(path);
+                else {
+                    log.error("Failed to generate pdf");
+                    return EMPTY_BYTE_ARRAY;
+                }
+            } catch (final IOException e) {
+                log.error("Failed to save pdf: {}", e.getMessage());
+                return EMPTY_BYTE_ARRAY;
+            } finally {
+                try {
+                    deleteIfExists(path);
+                    log.info("Deleted temporary file: {}", path);
+                } catch (final IOException e) {
+                    log.error("Failed to delete pdf: {}", e.getMessage());
+                }
+            }
+
+        } catch (IOException ex) {
+                return EMPTY_BYTE_ARRAY;
+        }
+    }
 }

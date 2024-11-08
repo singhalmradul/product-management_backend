@@ -1,6 +1,9 @@
 package io.github.singhalmradul.product_management.services.implementations;
 
+import static java.lang.String.format;
+import static java.nio.file.Files.createTempFile;
 import static java.nio.file.Files.deleteIfExists;
+import static java.nio.file.Files.newOutputStream;
 import static java.nio.file.Files.readAllBytes;
 
 import java.io.IOException;
@@ -37,25 +40,44 @@ public class OrderServiceImpl implements OrderService{
         final var orderRequest = repository.findById(orderId).orElseThrow();
 
         final var products = orderRequest.getProducts().stream().filter(OrderProduct::isPending).toList();
-        // TODO: remove order_product from order_request where completed=true?
         orderRequest.setProducts(products);
 
-        final var pdf = pdfService.generateOrderPdf(orderRequest);
         try {
-            return readAllBytes(pdf);
-        } catch (final IOException e) {
-            log.error("Failed to save pdf: {}", e.getMessage());
-            return EMPTY_BYTE_ARRAY;
-        } finally {
-            try {
-                deleteIfExists(pdf);
-                log.info("Deleted temporary file: {}", pdf);
+            var path = createTempFile(
+                format(
+                    "%s_%s_%s",
+                    orderRequest.getCustomer().getName(),
+                    orderRequest.getDate().toString(),
+                    orderRequest.getId()
+                ),
+                ".pdf"
+            );
+
+
+            try (var out = newOutputStream(path)) {
+
+                if(pdfService.generateOrderPdf(orderRequest, out))
+                    return readAllBytes(path);
+                else {
+                    log.error("Failed to generate pdf");
+                    return EMPTY_BYTE_ARRAY;
+                }
             } catch (final IOException e) {
-                log.error("Failed to delete pdf: {}", e.getMessage());
+                log.error("Failed to save pdf: {}", e.getMessage());
+                return EMPTY_BYTE_ARRAY;
+            } finally {
+                try {
+                    deleteIfExists(path);
+                    log.info("Deleted temporary file: {}", path);
+                } catch (final IOException e) {
+                    log.error("Failed to delete pdf: {}", e.getMessage());
+                }
+            }
+
+        }   catch (IOException ex) {
+                return EMPTY_BYTE_ARRAY;
             }
         }
-
-    }
 
     @Override
     public OrderRequest saveOrder(final OrderRequestObject order) {

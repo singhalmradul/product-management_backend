@@ -2,19 +2,16 @@ package io.github.singhalmradul.product_management.services.implementations;
 
 import static com.itextpdf.layout.borders.Border.NO_BORDER;
 import static com.itextpdf.layout.properties.VerticalAlignment.MIDDLE;
-import static java.lang.String.format;
 import static java.nio.file.Files.createTempFile;
-import static java.nio.file.Files.newOutputStream;
+import static java.nio.file.Files.deleteIfExists;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.nio.file.Path;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Component;
 
-import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -28,7 +25,10 @@ import com.itextpdf.layout.element.Table;
 import io.github.singhalmradul.product_management.model.entities.Category;
 import io.github.singhalmradul.product_management.model.entities.OrderProduct;
 import io.github.singhalmradul.product_management.model.entities.OrderRequest;
+import io.github.singhalmradul.product_management.model.entities.Product;
 import io.github.singhalmradul.product_management.services.PdfService;
+import io.github.singhalmradul.product_management.services.QrCodeService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -81,35 +81,20 @@ import lombok.extern.slf4j.Slf4j;
  * @see PdfService
  */
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class PdfServiceImpl implements PdfService {
+
+    private final QrCodeService qrCodeService;
 
     private float scaler;
 
     // MARK: - Pdf generation
     @Override
-    public Path generateOrderPdf(final OrderRequest order) {
-
-        Path path = null;
-
-        try {
-            path = createTempFile(
-                format(
-                    "%s_%s_%s",
-                    order.getCustomer().getName(),
-                    order.getDate().toString(),
-                    order.getId()
-                ),
-                ".pdf"
-            );
-
-        } catch (final IOException e) {
-            log.error("Failed to create file: {}", e.getMessage());
-        }
+    public boolean generateOrderPdf(final OrderRequest order, OutputStream out) {
 
 
         try (
-            var out = newOutputStream(path);
             var pdf = new PdfDocument(new PdfWriter(out));
             var document = new Document(pdf)
         ) {
@@ -123,10 +108,11 @@ public class PdfServiceImpl implements PdfService {
                 .add(productDetails(order.getProducts()))
                 .add(line())
             ;
-        } catch (final IOException e) {
+            return true;
+        } catch (final Exception e) {
             log.error("Failed to generate pdf: {}", e.getMessage());
+            return false;
         }
-        return path;
     }
 
     // MARK: - Document elements
@@ -178,20 +164,8 @@ public class PdfServiceImpl implements PdfService {
             productEntry.addCell(borderlessCell(productDetails));
 
             if (!product.getImages().isEmpty()) {
-
-                ImageData imageData = null;
-                try {
-                    imageData = ImageDataFactory.create(
-                        product
-                            .getImages()
-                            .stream()
-                            .findFirst()
-                            .orElseThrow()
-                    );
-                } catch (final MalformedURLException | NoSuchElementException e) {
-                    log.error("Failed to load image: {}", e.getMessage());
-                }
-                final Image image = new Image(imageData);
+                final var imageUrl = product.getImages().iterator().next();
+                final Image image = image(imageUrl);
                 image.setAutoScale(true);
                 image.setWidth(80);
 
@@ -240,5 +214,92 @@ public class PdfServiceImpl implements PdfService {
 
     private Cell borderlessCell(final Object object) {
         return borderlessCell(object.toString());
+    }
+
+    private Image image(String url) {
+        try {
+            return new Image(ImageDataFactory.create(url));
+        } catch (final MalformedURLException e) {
+            log.error("Failed to load image: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public boolean generateProductPdf(Product product, OutputStream out) {
+        try (
+            var pdf = new PdfDocument(new PdfWriter(out));
+            var document = new Document(pdf)
+        ) {
+            scaler = getScaler(document);
+
+            // Create product details table
+            final var productDetails = new Table(getTableWidths(1, 2));
+            addKeyValueBorderless(productDetails, "Code", product.getCode());
+            addKeyValueBorderless(productDetails, "Name", product.getName());
+            addKeyValueBorderless(productDetails, "Weight", product.getWeightString());
+
+            if (!product.getCategories().isEmpty()) {
+                final var categories = product
+                    .getCategories()
+                    .stream()
+                    .map(Category::getName)
+                    .toList()
+                ;
+                addKeyValueBorderless(productDetails, "Categories", String.join(", ", categories));
+            }
+
+            // Create product entry with image
+            final var productEntry = new Table(getTableWidths(2, 1));
+            productEntry.addCell(borderlessCell(productDetails));
+
+            if (!product.getImages().isEmpty()) {
+                final var imageUrl = product.getImages().stream().findAny().orElseThrow();
+                final Image image = image(imageUrl);
+                image.setAutoScale(true);
+                image.setWidth(80);
+
+                productEntry.addCell(
+                    new Cell()
+                        .add(image)
+                        .setBorder(NO_BORDER)
+                        .setVerticalAlignment(MIDDLE)
+                );
+            }
+
+            document
+                .add(line())
+                .add(new Paragraph("Product Details").setFontSize(20).setBold())
+                .add(line())
+                .add(productEntry)
+                .add(line())
+            ;
+
+            try {
+                var path = createTempFile(
+                    product.getCode(),
+                    ".png"
+                );
+
+                if(qrCodeService.generateQrCode(product.getCode(), 80, 80, path))
+                    document
+                        .add(new Paragraph(product.getCode()).setFontSize(20).setBold())
+                        .add(line())
+                        .add(image(path.toString()))
+                        .add(line())
+                    ;
+                try {
+                    deleteIfExists(path);
+                    log.info("Deleted temporary file: {}", path);
+                    return true;
+                } catch (final IOException e) {
+                    log.error("Failed to delete pdf: {}", e.getMessage());
+                    return false;
+                }
+            } catch (IOException e) {
+                log.error("Failed to save pdf: {}", e.getMessage());
+                return false;
+            }
+        }
     }
 }

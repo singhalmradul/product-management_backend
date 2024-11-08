@@ -20,4 +20,6 @@ public interface ProductHandler {
     ServerResponse searchProductsByName(ServerRequest request);
 
     ServerResponse deleteProduct(ServerRequest request);
+
+    ServerResponse getProductPdf(ServerRequest request);
 }

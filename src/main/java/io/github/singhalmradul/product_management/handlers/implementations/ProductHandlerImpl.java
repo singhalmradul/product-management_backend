@@ -6,7 +6,9 @@ import static io.github.singhalmradul.product_management.constants.RequestVariab
 import static io.github.singhalmradul.product_management.constants.RequestVariable.QUERY;
 import static io.github.singhalmradul.product_management.constants.UriConstants.PRODUCTS;
 import static io.github.singhalmradul.product_management.constants.UriConstants.SLASH;
+import static java.lang.String.format;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.web.servlet.function.ServerResponse.badRequest;
 import static org.springframework.web.servlet.function.ServerResponse.created;
 import static org.springframework.web.servlet.function.ServerResponse.ok;
@@ -133,5 +135,22 @@ public class ProductHandlerImpl implements ProductHandler{
             .contentType(APPLICATION_JSON)
             .body(productService.getProductByCode(productCode))
         ;
+    }
+
+    @Override
+    public ServerResponse getProductPdf(ServerRequest request) {
+        try {
+            var productId = request.pathVariable(PRODUCT_ID);
+            var id = UUID.fromString(productId);
+            String filename = format("product_%s.pdf", productId);
+            return ok()
+                .contentType(APPLICATION_PDF)
+                .header("Content-Disposition", "attachment; filename=" + filename)
+                .header("Cache-Control", "no-cache, no-store, must-revalidate")
+                .body(productService.getProductPdf(id))
+            ;
+        } catch (IllegalArgumentException ex) {
+            return badRequest().body(ex.getMessage());
+        }
     }
 }

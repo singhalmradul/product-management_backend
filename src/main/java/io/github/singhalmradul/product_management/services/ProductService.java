@@ -20,5 +20,7 @@ public interface ProductService {
 
     List<Product> searchProductsByName(String query);
 
+    byte[] getProductPdf(UUID productId);
+
     void deleteProduct(UUID id);
 }
