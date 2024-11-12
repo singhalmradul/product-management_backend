@@ -39,7 +39,12 @@ public class OrderServiceImpl implements OrderService{
 
         final var orderRequest = repository.findById(orderId).orElseThrow();
 
-        final var products = orderRequest.getProducts().stream().filter(OrderProduct::isPending).toList();
+        final var products = orderRequest
+            .getProducts()
+            .stream()
+            .filter(OrderProduct::isPending)
+            .toList()
+        ;
         orderRequest.setProducts(products);
 
         try {

@@ -281,7 +281,7 @@ public class PdfServiceImpl implements PdfService {
                     ".png"
                 );
 
-                if(qrCodeService.generateQrCode(product.getCode(), 80, 80, path))
+                if(qrCodeService.generateQrCode(product.getCode(), 160, 160, path))
                     document
                         .add(new Paragraph(product.getCode()).setFontSize(20).setBold())
                         .add(line())

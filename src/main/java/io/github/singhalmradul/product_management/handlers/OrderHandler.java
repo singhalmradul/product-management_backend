@@ -10,4 +10,6 @@ public interface OrderHandler {
     ServerResponse createOrder(ServerRequest request);
 
     ServerResponse getAllOrders(ServerRequest request);
+
+    ServerResponse getOrderById(ServerRequest request);
 }
