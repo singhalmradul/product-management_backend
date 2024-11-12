@@ -63,4 +63,17 @@ public class OrderHandlerImpl implements OrderHandler {
     public ServerResponse getAllOrders(ServerRequest request) {
         return ok().body(orderService.getAllOrders());
     }
+
+    @Override
+    public ServerResponse getOrderById(ServerRequest request) {
+        try {
+            var orderId = request.pathVariable(ORDER_ID);
+            var id = UUID.fromString(orderId);
+            return ok()
+                .body(orderService.getOrderById(id))
+            ;
+        } catch (IllegalArgumentException ex) {
+            return badRequest().body(ex.getMessage());
+        }
+    }
 }

@@ -121,6 +121,7 @@ public class RouterConfiguration {
                     .path(pathVariable(ORDER_ID), builder2 -> builder2
                         // /v1/orders/{orderId}
                         .GET(PDF, handler::getOrderPdf)
+                        .GET(INDEX, handler::getOrderById)
                     )
                 )
             )

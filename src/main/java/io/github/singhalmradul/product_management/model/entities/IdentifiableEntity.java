@@ -28,6 +28,9 @@ public abstract class IdentifiableEntity<T> extends AuditableEntity{
 
     @Override
     public int hashCode() {
+        if(getId() == null) {
+            return super.hashCode();
+        }
         return getId().hashCode();
     }
 
