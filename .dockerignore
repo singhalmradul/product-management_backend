@@ -1,0 +1,12 @@
+# Ignore Docker-related files
+.dockerignore
+docker-compose.yml
+
+# Ignore build outputs
+target/
+
+# Ignore temporary files
+*.log
+*.tmp
+
+init-scripts/
